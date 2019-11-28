@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="argparse"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\3rd_party\;CMake Files\3rd_party\fmt\;CMake Files\3rd_party\fmt\support\;CMake Files\3rd_party\fmt\support\cmake\;CMake Files\3rd_party\argparse\;CMake Files\3rd_party\catch2\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="C:/Users/84759/Desktop/miniplc0-compiler/cmake-build-debug/3rd_party/argparse"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/84759/Desktop/miniplc0-compiler/cmake-build-debug/3rd_party/argparse/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/84759/Desktop/miniplc0-compiler/cmake-build-debug/3rd_party/argparse/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/84759/Desktop/miniplc0-compiler/cmake-build-debug/3rd_party/argparse/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/84759/Desktop/miniplc0-compiler/cmake-build-debug/3rd_party/argparse/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="C:/Users/84759/Desktop/miniplc0-compiler/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="C:/Users/84759/Desktop/miniplc0-compiler/3rd_party/fmt/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\3rd_party\fmt\"/>
+		</Unit>
+		<Unit filename="C:/Users/84759/Desktop/miniplc0-compiler/3rd_party/fmt/support/cmake/cxx14.cmake">
+			<Option virtualFolder="CMake Files\3rd_party\fmt\support\cmake\"/>
+		</Unit>
+		<Unit filename="C:/Users/84759/Desktop/miniplc0-compiler/3rd_party/argparse/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\3rd_party\argparse\"/>
+		</Unit>
+		<Unit filename="C:/Users/84759/Desktop/miniplc0-compiler/3rd_party/catch2/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\3rd_party\catch2\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

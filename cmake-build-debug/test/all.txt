@@ -1,0 +1,250 @@
+正确情况的判断：
+
+词法分析全部内容判断
+begin
+	const a = 3;
+	var b;
+	b = 5-1;
+	print(a+b);
+	print(a-b);
+	print(a*b);
+	print(a/b);
+	print((a-b+a*b));
+	print(+a+-b);
+	print(a*-b+-a+b);
+end
+
+语法分析全部内容判断
+begin
+	const a=1;const b=4;
+	var c;var d = 2;
+	c = 3;
+	;;;;;
+	print(a+b+c);
+	print(a+b*(c+(-d))+d-c);
+end
+
+变量之间的赋值
+begin
+	const a = 1;
+	var b = a;
+	var c = b+2;
+	var d = a+b;
+	var e = b-c+d*a;
+	print(a);
+	print(b);
+	print(c);
+	print(d);
+	print(e);
+end
+
+变量多次赋值后的正确状态保存
+begin
+	const one = 1;
+	var b ;
+	var a = one+1;
+	var c = a*a*a;
+	print(c);
+	a = c*a;
+	print(a);
+	a = one+9;
+	b = 9-one;
+	print(a);
+	print(b);
+	b = a+1;
+	print(b);
+	a = a+2;
+	print(a);
+	b = a+b*a;
+	print(b);
+end
+
+范围内整数的计算
+begin
+	const max = 2147483647;
+	var min = -2147483647;
+	print(max+min);
+	print(max-1);
+	print(min+1);
+end
+
+
+错误情况的判断：
+
+标识符不符合要求
+begin
+	const 123abc = 23;
+end
+
+begin
+	var a(bc;
+end
+
+begin
+	var (abc;
+end
+
+begin
+	var c = const;
+end
+
+begin
+	var var = 23;
+end
+
+正负数溢出(计算时的溢出不是编译器的行为，因此暂时不必考虑)
+begin
+	var a = -2147483649
+end
+
+begin
+	const c = -2147483648;
+end
+
+begin
+	print(2147483648);
+end
+
+不合法内容的检测
+begin
+	&12
+end
+
+begin
+	int a = 3;
+end
+
+程序前后界
+const a = 3;
+
+begin
+	print(2)
+
+begin
+	var a = 1;
+end
+end
+
+begin
+	var b = 1;
+end
+	var c = 2;
+
+各个非终结符推导式的错误判断（定义，表达式，赋值，输出等等）
+begin
+	const ;
+end
+
+begin
+	var 
+end
+
+begin
+	var b = ;
+end
+
+begin
+	print(2;
+end
+
+begin
+	print(2+3*-);
+end
+
+begin
+	var b = 23;
+	b = ;
+end
+
+begin
+	var a = 2;
+	= ;
+end
+
+分号问题
+begin;
+
+begin
+	const a = 23
+end
+
+begin
+	const a = 23;
+	var b
+end
+
+begin
+	print(23)
+end
+
+不合理的变量使用
+begin
+	const a = 234;
+	var b;
+	var c = 23;
+	c = b;
+end
+
+begin
+	var a;
+	print(a);
+end
+
+begin
+	var b = 23;
+	b = c;
+end
+
+begin
+	print(a);
+end
+
+begin
+	const a = 23;
+	a = 23;
+end
+
+begin
+	const a = 23;
+	var b = a;
+	a = b;
+end
+
+不合理的变量定义
+begin
+	const a = b;
+end
+
+begin
+	const a;
+end
+
+begin
+	const a = ;
+end
+
+begin
+	const a = 23;
+	var b = a23;
+end
+
+begin
+	var c = 1;
+	var b;
+	b = 12*;
+end
+
+begin
+	const c = 23;
+	var b = c;
+	b =;
+end
+
+begin
+	var b = ;
+end
+
+begin
+	const a = 23;
+	const b;
+end

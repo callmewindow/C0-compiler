@@ -1,0 +1,3 @@
+begin
+	var 123abc = 2;
+end
