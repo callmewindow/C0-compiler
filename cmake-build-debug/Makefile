@@ -47,10 +47,10 @@ RM = "E:\CLion 2019.2.4\bin\cmake\win\bin\cmake.exe" -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\84759\Desktop\miniplc0-compiler
+CMAKE_SOURCE_DIR = F:\Desktop\study\C0-compiler
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\84759\Desktop\miniplc0-compiler\cmake-build-debug
+CMAKE_BINARY_DIR = F:\Desktop\study\C0-compiler\cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -76,16 +76,6 @@ test:
 test/fast: test
 
 .PHONY : test/fast
-
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-
-.PHONY : list_install_components/fast
 
 # Special rule for the target install/local
 install/local: preinstall
@@ -122,6 +112,16 @@ edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
 
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+
+.PHONY : list_install_components/fast
+
 # Special rule for the target install/strip
 install/strip: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
@@ -136,9 +136,9 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\84759\Desktop\miniplc0-compiler\cmake-build-debug\CMakeFiles C:\Users\84759\Desktop\miniplc0-compiler\cmake-build-debug\CMakeFiles\progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start F:\Desktop\study\C0-compiler\cmake-build-debug\CMakeFiles F:\Desktop\study\C0-compiler\cmake-build-debug\CMakeFiles\progress.marks
 	$(MAKE) -f CMakeFiles\Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\84759\Desktop\miniplc0-compiler\cmake-build-debug\CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start F:\Desktop\study\C0-compiler\cmake-build-debug\CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -167,43 +167,43 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named miniplc0
+# Target rules for targets named cc0
 
 # Build rule for target.
-miniplc0: cmake_check_build_system
-	$(MAKE) -f CMakeFiles\Makefile2 miniplc0
-.PHONY : miniplc0
+cc0: cmake_check_build_system
+	$(MAKE) -f CMakeFiles\Makefile2 cc0
+.PHONY : cc0
 
 # fast build rule for target.
-miniplc0/fast:
-	$(MAKE) -f CMakeFiles\miniplc0.dir\build.make CMakeFiles/miniplc0.dir/build
-.PHONY : miniplc0/fast
+cc0/fast:
+	$(MAKE) -f CMakeFiles\cc0.dir\build.make CMakeFiles/cc0.dir/build
+.PHONY : cc0/fast
 
 #=============================================================================
-# Target rules for targets named miniplc0_lib
+# Target rules for targets named cc0_lib
 
 # Build rule for target.
-miniplc0_lib: cmake_check_build_system
-	$(MAKE) -f CMakeFiles\Makefile2 miniplc0_lib
-.PHONY : miniplc0_lib
+cc0_lib: cmake_check_build_system
+	$(MAKE) -f CMakeFiles\Makefile2 cc0_lib
+.PHONY : cc0_lib
 
 # fast build rule for target.
-miniplc0_lib/fast:
-	$(MAKE) -f CMakeFiles\miniplc0_lib.dir\build.make CMakeFiles/miniplc0_lib.dir/build
-.PHONY : miniplc0_lib/fast
+cc0_lib/fast:
+	$(MAKE) -f CMakeFiles\cc0_lib.dir\build.make CMakeFiles/cc0_lib.dir/build
+.PHONY : cc0_lib/fast
 
 #=============================================================================
-# Target rules for targets named miniplc0_test
+# Target rules for targets named cc0_test
 
 # Build rule for target.
-miniplc0_test: cmake_check_build_system
-	$(MAKE) -f CMakeFiles\Makefile2 miniplc0_test
-.PHONY : miniplc0_test
+cc0_test: cmake_check_build_system
+	$(MAKE) -f CMakeFiles\Makefile2 cc0_test
+.PHONY : cc0_test
 
 # fast build rule for target.
-miniplc0_test/fast:
-	$(MAKE) -f CMakeFiles\miniplc0_test.dir\build.make CMakeFiles/miniplc0_test.dir/build
-.PHONY : miniplc0_test/fast
+cc0_test/fast:
+	$(MAKE) -f CMakeFiles\cc0_test.dir\build.make CMakeFiles/cc0_test.dir/build
+.PHONY : cc0_test/fast
 
 #=============================================================================
 # Target rules for targets named fmt
@@ -224,7 +224,7 @@ analyser/analyser.obj: analyser/analyser.cpp.obj
 
 # target to build an object file
 analyser/analyser.cpp.obj:
-	$(MAKE) -f CMakeFiles\miniplc0_lib.dir\build.make CMakeFiles/miniplc0_lib.dir/analyser/analyser.cpp.obj
+	$(MAKE) -f CMakeFiles\cc0_lib.dir\build.make CMakeFiles/cc0_lib.dir/analyser/analyser.cpp.obj
 .PHONY : analyser/analyser.cpp.obj
 
 analyser/analyser.i: analyser/analyser.cpp.i
@@ -233,7 +233,7 @@ analyser/analyser.i: analyser/analyser.cpp.i
 
 # target to preprocess a source file
 analyser/analyser.cpp.i:
-	$(MAKE) -f CMakeFiles\miniplc0_lib.dir\build.make CMakeFiles/miniplc0_lib.dir/analyser/analyser.cpp.i
+	$(MAKE) -f CMakeFiles\cc0_lib.dir\build.make CMakeFiles/cc0_lib.dir/analyser/analyser.cpp.i
 .PHONY : analyser/analyser.cpp.i
 
 analyser/analyser.s: analyser/analyser.cpp.s
@@ -242,8 +242,35 @@ analyser/analyser.s: analyser/analyser.cpp.s
 
 # target to generate assembly for a file
 analyser/analyser.cpp.s:
-	$(MAKE) -f CMakeFiles\miniplc0_lib.dir\build.make CMakeFiles/miniplc0_lib.dir/analyser/analyser.cpp.s
+	$(MAKE) -f CMakeFiles\cc0_lib.dir\build.make CMakeFiles/cc0_lib.dir/analyser/analyser.cpp.s
 .PHONY : analyser/analyser.cpp.s
+
+file.obj: file.cpp.obj
+
+.PHONY : file.obj
+
+# target to build an object file
+file.cpp.obj:
+	$(MAKE) -f CMakeFiles\cc0.dir\build.make CMakeFiles/cc0.dir/file.cpp.obj
+.PHONY : file.cpp.obj
+
+file.i: file.cpp.i
+
+.PHONY : file.i
+
+# target to preprocess a source file
+file.cpp.i:
+	$(MAKE) -f CMakeFiles\cc0.dir\build.make CMakeFiles/cc0.dir/file.cpp.i
+.PHONY : file.cpp.i
+
+file.s: file.cpp.s
+
+.PHONY : file.s
+
+# target to generate assembly for a file
+file.cpp.s:
+	$(MAKE) -f CMakeFiles\cc0.dir\build.make CMakeFiles/cc0.dir/file.cpp.s
+.PHONY : file.cpp.s
 
 main.obj: main.cpp.obj
 
@@ -251,7 +278,7 @@ main.obj: main.cpp.obj
 
 # target to build an object file
 main.cpp.obj:
-	$(MAKE) -f CMakeFiles\miniplc0.dir\build.make CMakeFiles/miniplc0.dir/main.cpp.obj
+	$(MAKE) -f CMakeFiles\cc0.dir\build.make CMakeFiles/cc0.dir/main.cpp.obj
 .PHONY : main.cpp.obj
 
 main.i: main.cpp.i
@@ -260,7 +287,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) -f CMakeFiles\miniplc0.dir\build.make CMakeFiles/miniplc0.dir/main.cpp.i
+	$(MAKE) -f CMakeFiles\cc0.dir\build.make CMakeFiles/cc0.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -269,7 +296,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) -f CMakeFiles\miniplc0.dir\build.make CMakeFiles/miniplc0.dir/main.cpp.s
+	$(MAKE) -f CMakeFiles\cc0.dir\build.make CMakeFiles/cc0.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 tests/test_analyser.obj: tests/test_analyser.cpp.obj
@@ -278,7 +305,7 @@ tests/test_analyser.obj: tests/test_analyser.cpp.obj
 
 # target to build an object file
 tests/test_analyser.cpp.obj:
-	$(MAKE) -f CMakeFiles\miniplc0_test.dir\build.make CMakeFiles/miniplc0_test.dir/tests/test_analyser.cpp.obj
+	$(MAKE) -f CMakeFiles\cc0_test.dir\build.make CMakeFiles/cc0_test.dir/tests/test_analyser.cpp.obj
 .PHONY : tests/test_analyser.cpp.obj
 
 tests/test_analyser.i: tests/test_analyser.cpp.i
@@ -287,7 +314,7 @@ tests/test_analyser.i: tests/test_analyser.cpp.i
 
 # target to preprocess a source file
 tests/test_analyser.cpp.i:
-	$(MAKE) -f CMakeFiles\miniplc0_test.dir\build.make CMakeFiles/miniplc0_test.dir/tests/test_analyser.cpp.i
+	$(MAKE) -f CMakeFiles\cc0_test.dir\build.make CMakeFiles/cc0_test.dir/tests/test_analyser.cpp.i
 .PHONY : tests/test_analyser.cpp.i
 
 tests/test_analyser.s: tests/test_analyser.cpp.s
@@ -296,7 +323,7 @@ tests/test_analyser.s: tests/test_analyser.cpp.s
 
 # target to generate assembly for a file
 tests/test_analyser.cpp.s:
-	$(MAKE) -f CMakeFiles\miniplc0_test.dir\build.make CMakeFiles/miniplc0_test.dir/tests/test_analyser.cpp.s
+	$(MAKE) -f CMakeFiles\cc0_test.dir\build.make CMakeFiles/cc0_test.dir/tests/test_analyser.cpp.s
 .PHONY : tests/test_analyser.cpp.s
 
 tests/test_main.obj: tests/test_main.cpp.obj
@@ -305,7 +332,7 @@ tests/test_main.obj: tests/test_main.cpp.obj
 
 # target to build an object file
 tests/test_main.cpp.obj:
-	$(MAKE) -f CMakeFiles\miniplc0_test.dir\build.make CMakeFiles/miniplc0_test.dir/tests/test_main.cpp.obj
+	$(MAKE) -f CMakeFiles\cc0_test.dir\build.make CMakeFiles/cc0_test.dir/tests/test_main.cpp.obj
 .PHONY : tests/test_main.cpp.obj
 
 tests/test_main.i: tests/test_main.cpp.i
@@ -314,7 +341,7 @@ tests/test_main.i: tests/test_main.cpp.i
 
 # target to preprocess a source file
 tests/test_main.cpp.i:
-	$(MAKE) -f CMakeFiles\miniplc0_test.dir\build.make CMakeFiles/miniplc0_test.dir/tests/test_main.cpp.i
+	$(MAKE) -f CMakeFiles\cc0_test.dir\build.make CMakeFiles/cc0_test.dir/tests/test_main.cpp.i
 .PHONY : tests/test_main.cpp.i
 
 tests/test_main.s: tests/test_main.cpp.s
@@ -323,7 +350,7 @@ tests/test_main.s: tests/test_main.cpp.s
 
 # target to generate assembly for a file
 tests/test_main.cpp.s:
-	$(MAKE) -f CMakeFiles\miniplc0_test.dir\build.make CMakeFiles/miniplc0_test.dir/tests/test_main.cpp.s
+	$(MAKE) -f CMakeFiles\cc0_test.dir\build.make CMakeFiles/cc0_test.dir/tests/test_main.cpp.s
 .PHONY : tests/test_main.cpp.s
 
 tests/test_tokenizer.obj: tests/test_tokenizer.cpp.obj
@@ -332,7 +359,7 @@ tests/test_tokenizer.obj: tests/test_tokenizer.cpp.obj
 
 # target to build an object file
 tests/test_tokenizer.cpp.obj:
-	$(MAKE) -f CMakeFiles\miniplc0_test.dir\build.make CMakeFiles/miniplc0_test.dir/tests/test_tokenizer.cpp.obj
+	$(MAKE) -f CMakeFiles\cc0_test.dir\build.make CMakeFiles/cc0_test.dir/tests/test_tokenizer.cpp.obj
 .PHONY : tests/test_tokenizer.cpp.obj
 
 tests/test_tokenizer.i: tests/test_tokenizer.cpp.i
@@ -341,7 +368,7 @@ tests/test_tokenizer.i: tests/test_tokenizer.cpp.i
 
 # target to preprocess a source file
 tests/test_tokenizer.cpp.i:
-	$(MAKE) -f CMakeFiles\miniplc0_test.dir\build.make CMakeFiles/miniplc0_test.dir/tests/test_tokenizer.cpp.i
+	$(MAKE) -f CMakeFiles\cc0_test.dir\build.make CMakeFiles/cc0_test.dir/tests/test_tokenizer.cpp.i
 .PHONY : tests/test_tokenizer.cpp.i
 
 tests/test_tokenizer.s: tests/test_tokenizer.cpp.s
@@ -350,7 +377,7 @@ tests/test_tokenizer.s: tests/test_tokenizer.cpp.s
 
 # target to generate assembly for a file
 tests/test_tokenizer.cpp.s:
-	$(MAKE) -f CMakeFiles\miniplc0_test.dir\build.make CMakeFiles/miniplc0_test.dir/tests/test_tokenizer.cpp.s
+	$(MAKE) -f CMakeFiles\cc0_test.dir\build.make CMakeFiles/cc0_test.dir/tests/test_tokenizer.cpp.s
 .PHONY : tests/test_tokenizer.cpp.s
 
 tokenizer/tokenizer.obj: tokenizer/tokenizer.cpp.obj
@@ -359,7 +386,7 @@ tokenizer/tokenizer.obj: tokenizer/tokenizer.cpp.obj
 
 # target to build an object file
 tokenizer/tokenizer.cpp.obj:
-	$(MAKE) -f CMakeFiles\miniplc0_lib.dir\build.make CMakeFiles/miniplc0_lib.dir/tokenizer/tokenizer.cpp.obj
+	$(MAKE) -f CMakeFiles\cc0_lib.dir\build.make CMakeFiles/cc0_lib.dir/tokenizer/tokenizer.cpp.obj
 .PHONY : tokenizer/tokenizer.cpp.obj
 
 tokenizer/tokenizer.i: tokenizer/tokenizer.cpp.i
@@ -368,7 +395,7 @@ tokenizer/tokenizer.i: tokenizer/tokenizer.cpp.i
 
 # target to preprocess a source file
 tokenizer/tokenizer.cpp.i:
-	$(MAKE) -f CMakeFiles\miniplc0_lib.dir\build.make CMakeFiles/miniplc0_lib.dir/tokenizer/tokenizer.cpp.i
+	$(MAKE) -f CMakeFiles\cc0_lib.dir\build.make CMakeFiles/cc0_lib.dir/tokenizer/tokenizer.cpp.i
 .PHONY : tokenizer/tokenizer.cpp.i
 
 tokenizer/tokenizer.s: tokenizer/tokenizer.cpp.s
@@ -377,8 +404,35 @@ tokenizer/tokenizer.s: tokenizer/tokenizer.cpp.s
 
 # target to generate assembly for a file
 tokenizer/tokenizer.cpp.s:
-	$(MAKE) -f CMakeFiles\miniplc0_lib.dir\build.make CMakeFiles/miniplc0_lib.dir/tokenizer/tokenizer.cpp.s
+	$(MAKE) -f CMakeFiles\cc0_lib.dir\build.make CMakeFiles/cc0_lib.dir/tokenizer/tokenizer.cpp.s
 .PHONY : tokenizer/tokenizer.cpp.s
+
+vm.obj: vm.cpp.obj
+
+.PHONY : vm.obj
+
+# target to build an object file
+vm.cpp.obj:
+	$(MAKE) -f CMakeFiles\cc0.dir\build.make CMakeFiles/cc0.dir/vm.cpp.obj
+.PHONY : vm.cpp.obj
+
+vm.i: vm.cpp.i
+
+.PHONY : vm.i
+
+# target to preprocess a source file
+vm.cpp.i:
+	$(MAKE) -f CMakeFiles\cc0.dir\build.make CMakeFiles/cc0.dir/vm.cpp.i
+.PHONY : vm.cpp.i
+
+vm.s: vm.cpp.s
+
+.PHONY : vm.s
+
+# target to generate assembly for a file
+vm.cpp.s:
+	$(MAKE) -f CMakeFiles\cc0.dir\build.make CMakeFiles/cc0.dir/vm.cpp.s
+.PHONY : vm.cpp.s
 
 # Help Target
 help:
@@ -386,20 +440,23 @@ help:
 	@echo ... all (the default if no target is provided)
 	@echo ... clean
 	@echo ... depend
+	@echo ... cc0
+	@echo ... cc0_lib
+	@echo ... cc0_test
 	@echo ... rebuild_cache
 	@echo ... test
-	@echo ... miniplc0
-	@echo ... miniplc0_lib
-	@echo ... list_install_components
-	@echo ... miniplc0_test
 	@echo ... install/local
 	@echo ... install
 	@echo ... edit_cache
+	@echo ... list_install_components
 	@echo ... install/strip
 	@echo ... fmt
 	@echo ... analyser/analyser.obj
 	@echo ... analyser/analyser.i
 	@echo ... analyser/analyser.s
+	@echo ... file.obj
+	@echo ... file.i
+	@echo ... file.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s
@@ -415,6 +472,9 @@ help:
 	@echo ... tokenizer/tokenizer.obj
 	@echo ... tokenizer/tokenizer.i
 	@echo ... tokenizer/tokenizer.s
+	@echo ... vm.obj
+	@echo ... vm.i
+	@echo ... vm.s
 .PHONY : help
 
 

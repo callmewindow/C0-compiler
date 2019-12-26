@@ -424,24 +424,28 @@ class ArgumentParser {
     std::string print_help() {
       std::stringstream stream;
       stream << std::left;
-      stream << "Usage: " << mProgramName << " [options] ";
+      stream << "Usage: \n";
+      stream << "   " << mProgramName << " [options] input [-o file]\n";
+      stream << "or \n" ;
+      stream << "   " << mProgramName << " [-h]\n";
       size_t tLongestArgumentLength = get_length_of_longest_argument();
 
-      for (const auto& argument : mPositionalArguments) {
-        stream << argument->mNames.front() << " ";
-      }
-      stream << "\n\n";
-
-      if (!mPositionalArguments.empty())
-        stream << "Positional arguments:\n";
-
-      for (const auto& mPositionalArgument : mPositionalArguments) {
-        stream.width(tLongestArgumentLength);
-        stream << *mPositionalArgument;
-      }
+//      for (const auto& argument : mPositionalArguments) {
+//        stream << argument->mNames.front() << " ";
+//      }
+//      stream << "\n";
+//
+//      if (!mPositionalArguments.empty())
+//        stream << "Positional arguments:\n";
+//
+//      for (const auto& mPositionalArgument : mPositionalArguments) {
+//        stream.width(tLongestArgumentLength);
+//        stream << "   ";
+//        stream << *mPositionalArgument;
+//      }
 
       if (!mOptionalArguments.empty())
-        stream << (mPositionalArguments.empty() ? "" : "\n") << "Optional arguments:\n";
+        stream << (mPositionalArguments.empty() ? "" : "\n") << "Options:\n";
 
       for (const auto & mOptionalArgument : mOptionalArguments) {
         stream.width(tLongestArgumentLength);

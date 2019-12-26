@@ -2,3 +2,5 @@
 CMakeSettings.json
 !CMakeLists.txt
 build
+
+documents

@@ -1,0 +1,2 @@
+E:\mingw64\bin\ar.exe qc libC0_lib.a  CMakeFiles/C0_lib.dir/tokenizer/tokenizer.cpp.obj CMakeFiles/C0_lib.dir/analyser/analyser.cpp.obj
+E:\mingw64\bin\ranlib.exe libC0_lib.a

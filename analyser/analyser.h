@@ -11,7 +11,38 @@
 #include <cstdint>
 #include <cstddef> // for std::size_t
 
-namespace miniplc0 {
+namespace cc0 {
+
+    // 变量格式
+    struct varInfo{
+        std::string varName;
+        bool isConst;
+        long long offsetIndex;
+        // std::string varType; 此时只有int一个类型，因此省略
+    };
+
+    // 函数格式
+    struct funcInfo{
+        std::string funcName;
+        std::string funcType;
+        int paramNum;
+        int constOffset;
+        bool isReturn;
+        // int hierarchy; 此时层次始终默认为一，因此去除属性
+        std::vector<cc0::Instruction> localCode;
+    };
+    // 常量格式
+    struct constInfo{
+        char type;
+        std::string value;
+    };
+
+    // 输出格式
+    struct resultInfo{
+        std::vector<cc0::Instruction> globalCode;
+        std::vector<cc0::constInfo> constList;
+        std::vector<cc0::funcInfo> funcList;
+    };
 
 	class Analyser final {
 	private:
@@ -21,81 +52,103 @@ namespace miniplc0 {
 		using int32_t = std::int32_t;
 	public:
 		Analyser(std::vector<Token> v)
-			: _tokens(std::move(v)), _offset(0), _instructions({}), _current_pos(0, 0),
-			_uninitialized_vars({}), _vars({}), _consts({}), _nextTokenIndex(0) {}
+			: _tokens(std::move(v)), _offset(0), _current_pos(0, 0), _nextTokenIndex(0) {}
 		Analyser(Analyser&&) = delete;
 		Analyser(const Analyser&) = delete;
 		Analyser& operator=(Analyser) = delete;
 
 		// 唯一接口
-		std::pair<std::vector<Instruction>, std::optional<CompilationError>> Analyse();
+		std::pair<cc0::resultInfo, std::optional<CompilationError>> Analyse();
+
 	private:
 		// 所有的递归子程序
+//		// <常表达式>
+//		// 这里的 out 是常表达式的值
+//		std::optional<CompilationError> analyseConstantExpression(int32_t& out);
 
-		// <程序>
-		std::optional<CompilationError> analyseProgram();
-		// <主过程>
-		std::optional<CompilationError> analyseMain();
-		// <常量声明>
-		std::optional<CompilationError> analyseConstantDeclaration();
-		// <变量声明>
-		std::optional<CompilationError> analyseVariableDeclaration();
-		// <语句序列>
-		std::optional<CompilationError> analyseStatementSequence();
-		// <常表达式>
-		// 这里的 out 是常表达式的值
-		std::optional<CompilationError> analyseConstantExpression(int32_t& out);
-		// <表达式>
-		std::optional<CompilationError> analyseExpression();
-		// <赋值语句>
-		std::optional<CompilationError> analyseAssignmentStatement();
-		// <输出语句>
-		std::optional<CompilationError> analyseOutputStatement();
-		// <项>
-		std::optional<CompilationError> analyseItem();
-		// <因子>
-		std::optional<CompilationError> analyseFactor();
+        // 对可能有特殊含义的值增加了normal前缀
+        std::optional<CompilationError> c0Program();
+        std::optional<CompilationError> assignmentExpression();
+        std::optional<CompilationError> normalExpression();
+        std::optional<CompilationError> additiveExpression();
+        std::optional<CompilationError> multiplicativeExpression();
+        std::optional<CompilationError> unaryExpression();
+        std::optional<CompilationError> primaryExpression();
+        std::optional<CompilationError> variableDeclaration();
+        std::optional<CompilationError> initDeclaratorList(bool isConst);
+        std::optional<CompilationError> initDeclarator(bool isConst);
+        std::optional<CompilationError> functionDefinition();
+        std::optional<CompilationError> parameterClause(int& paramNum);
+        std::optional<CompilationError> parameterDeclarationList(int& paramNum);
+        std::optional<CompilationError> parameterDeclaration();
+        std::optional<CompilationError> functionCall();
+        std::optional<CompilationError> expresionList(int& paramNum);
+        std::optional<CompilationError> compoundStatement();
+        std::optional<CompilationError> statementSequence();
+        std::optional<CompilationError> normalStatement();
+        std::optional<CompilationError> jumpStatement();
+        std::optional<CompilationError> returnStatement();
+        std::optional<CompilationError> conditionStatement();
+        std::optional<CompilationError> normalCondition();
+        std::optional<CompilationError> loopStatement();
+        std::optional<CompilationError> scanStatement();
+        std::optional<CompilationError> printStatement();
+        std::optional<CompilationError> printableList();
+        std::optional<CompilationError> printable();
 
-		// Token 缓冲区相关操作
-
-		// 返回下一个 token
-		std::optional<Token> nextToken();
-		// 回退一个 token
-		void unreadToken();
-
-		// 下面是符号表相关操作
-
-		// helper function
-		void _add(const Token&, std::map<std::string, int32_t>&);
-		// 添加变量、常量、未初始化的变量
-		void addVariable(const Token&);
-		void addConstant(const Token&);
-		void addUninitializedVariable(const Token&);
-		// 是否被声明过
-		bool isDeclared(const std::string&);
-		// 是否是未初始化的变量
-		bool isUninitializedVariable(const std::string&);
-		// 是否是已初始化的变量
-		bool isInitializedVariable(const std::string&);
-		// 是否是常量
-		bool isConstant(const std::string&);
-		// 获得 {变量，常量} 在栈上的偏移
-		int32_t getIndex(const std::string&);
 	private:
 		std::vector<Token> _tokens;
 		std::size_t _offset;
-		std::vector<Instruction> _instructions;
 		std::pair<uint64_t, uint64_t> _current_pos;
 
-		// 为了简单处理，我们直接把符号表耦合在语法分析里
-		// 变量                   示例
-		// _uninitialized_vars    var a;
-		// _vars                  var a=1;
-		// _consts                const a=1;
-		std::map<std::string, int32_t> _uninitialized_vars;
-		std::map<std::string, int32_t> _vars;
-		std::map<std::string, int32_t> _consts;
-		// 下一个 token 在栈的偏移
-		int32_t _nextTokenIndex;
-	};
+
+        // 下一个 token 在栈的偏移
+        int32_t _nextTokenIndex;
+
+        // Token 缓冲区相关操作
+        // 返回下一个 token
+        std::optional<Token> nextToken();
+        // 回退一个 token
+        void unreadToken();
+
+		// 为了简单处理，直接把符号表耦合在语法分析里
+
+		// 脚标直接基于vector的存储顺序
+		// 默认值，这里是指变量的默认初始值和int函数的默认返回值
+		cc0::resultInfo result ;
+
+		std::string defaultValue = "0";
+		// 全局变量表
+		std::vector<cc0::varInfo> globalVarList;
+		// 局部变量表
+        std::vector<cc0::varInfo> localVarList;
+
+        bool globalFlag;
+		// 启动代码
+        std::vector<cc0::Instruction> globalCode;
+        long long globalOffset;
+        // 临时函数代码
+        std::vector<cc0::Instruction> localCode;
+        long long localOffset;
+
+		// 维护函数表及函数体的指令
+		std::vector<cc0::funcInfo> funcList;
+        funcInfo funcNow,zeroFunc;
+
+        // 维护常量表
+        std::vector<cc0::constInfo> constList;
+
+        // 下面是符号表相关操作
+        // 判断变量重定义
+        bool isDeclared(const std::string& name, const std::string& type);
+        // 判断常量
+        bool isConst(const std::string& name);
+        // 判断函数重名并const 获取函数&脚标
+        int getFunc(const std::string& name);
+        void resetFunc(){funcNow = zeroFunc;}
+        // 获取常量
+        int getConst(const std::string& name);
+        // 获取变量脚标
+        std::pair<std::string, std::string> getVar(const std::string &name);
+    };
 }

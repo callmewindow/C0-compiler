@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/84759/Desktop/miniplc0-compiler
+# Install script for directory: F:/Desktop/study/C0-compiler
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/miniplc0")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/C0")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,9 +34,9 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/Users/84759/Desktop/miniplc0-compiler/cmake-build-debug/3rd_party/argparse/cmake_install.cmake")
-  include("C:/Users/84759/Desktop/miniplc0-compiler/cmake-build-debug/3rd_party/fmt/cmake_install.cmake")
-  include("C:/Users/84759/Desktop/miniplc0-compiler/cmake-build-debug/3rd_party/catch2/cmake_install.cmake")
+  include("F:/Desktop/study/C0-compiler/cmake-build-debug/3rd_party/argparse/cmake_install.cmake")
+  include("F:/Desktop/study/C0-compiler/cmake-build-debug/3rd_party/fmt/cmake_install.cmake")
+  include("F:/Desktop/study/C0-compiler/cmake-build-debug/3rd_party/catch2/cmake_install.cmake")
 
 endif()
 
@@ -48,5 +48,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/84759/Desktop/miniplc0-compiler/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "F:/Desktop/study/C0-compiler/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

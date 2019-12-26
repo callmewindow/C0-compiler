@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="C0"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\3rd_party\;CMake Files\3rd_party\argparse\;CMake Files\3rd_party\fmt\;CMake Files\3rd_party\fmt\support\;CMake Files\3rd_party\fmt\support\cmake\;CMake Files\3rd_party\catch2\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="C0_lib">
+				<Option output="F:/Desktop/study/C0-compiler/cmake-build-debug/libC0_lib.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="F:/Desktop/study/C0-compiler/."/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+					<Add directory="E:\mingw64\include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 C0_lib"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="C0_lib/fast">
+				<Option output="F:/Desktop/study/C0-compiler/cmake-build-debug/libC0_lib.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="F:/Desktop/study/C0-compiler/."/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+					<Add directory="E:\mingw64\include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 C0_lib/fast"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 list_install_components"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="miniplc0_test">
+				<Option output="F:/Desktop/study/C0-compiler/cmake-build-debug/miniplc0_test.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DFMT_LOCALE"/>
+					<Add directory="F:/Desktop/study/C0-compiler/."/>
+					<Add directory="F:/Desktop/study/C0-compiler/3rd_party/catch2"/>
+					<Add directory="F:/Desktop/study/C0-compiler/3rd_party/fmt/include"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+					<Add directory="E:\mingw64\include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 miniplc0_test"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="miniplc0_test/fast">
+				<Option output="F:/Desktop/study/C0-compiler/cmake-build-debug/miniplc0_test.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DFMT_LOCALE"/>
+					<Add directory="F:/Desktop/study/C0-compiler/."/>
+					<Add directory="F:/Desktop/study/C0-compiler/3rd_party/catch2"/>
+					<Add directory="F:/Desktop/study/C0-compiler/3rd_party/fmt/include"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+					<Add directory="E:\mingw64\include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 miniplc0_test/fast"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="C0">
+				<Option output="F:/Desktop/study/C0-compiler/cmake-build-debug/C0.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DFMT_LOCALE"/>
+					<Add directory="F:/Desktop/study/C0-compiler/."/>
+					<Add directory="F:/Desktop/study/C0-compiler/3rd_party/argparse/include"/>
+					<Add directory="F:/Desktop/study/C0-compiler/3rd_party/fmt/include"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+					<Add directory="E:\mingw64\include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 C0"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="C0/fast">
+				<Option output="F:/Desktop/study/C0-compiler/cmake-build-debug/C0.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DFMT_LOCALE"/>
+					<Add directory="F:/Desktop/study/C0-compiler/."/>
+					<Add directory="F:/Desktop/study/C0-compiler/3rd_party/argparse/include"/>
+					<Add directory="F:/Desktop/study/C0-compiler/3rd_party/fmt/include"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+					<Add directory="E:\mingw64\include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 C0/fast"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="test">
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 test"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 install/local"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 install"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fmt">
+				<Option output="F:/Desktop/study/C0-compiler/cmake-build-debug/3rd_party/fmt/libfmtd.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug/3rd_party/fmt"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DFMT_LOCALE"/>
+					<Add directory="F:/Desktop/study/C0-compiler/3rd_party/fmt/include"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+					<Add directory="E:\mingw64\include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/3rd_party/fmt/Makefile&quot;  VERBOSE=1 fmt"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/3rd_party/fmt/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/3rd_party/fmt/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/3rd_party/fmt/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fmt/fast">
+				<Option output="F:/Desktop/study/C0-compiler/cmake-build-debug/3rd_party/fmt/libfmtd.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="F:/Desktop/study/C0-compiler/cmake-build-debug/3rd_party/fmt"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DFMT_LOCALE"/>
+					<Add directory="F:/Desktop/study/C0-compiler/3rd_party/fmt/include"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="E:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+					<Add directory="E:\mingw64\include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/3rd_party/fmt/Makefile&quot;  VERBOSE=1 fmt/fast"/>
+					<CompileFile command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/3rd_party/fmt/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/3rd_party/fmt/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="E:/mingw64/bin/mingw32-make.exe -f &quot;F:/Desktop/study/C0-compiler/cmake-build-debug/3rd_party/fmt/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/ChangeLog.rst">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/README.rst">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/include/fmt/chrono.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/include/fmt/color.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/include/fmt/compile.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/include/fmt/core.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/include/fmt/format-inl.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/include/fmt/format.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/include/fmt/locale.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/include/fmt/ostream.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/include/fmt/posix.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/include/fmt/printf.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/include/fmt/ranges.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/include/fmt/safe-duration-cast.h">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/src/format.cc">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/src/posix.cc">
+			<Option target="fmt"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/analyser/analyser.cpp">
+			<Option target="C0_lib"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/analyser/analyser.h">
+			<Option target="C0_lib"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/error/error.h">
+			<Option target="C0_lib"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/fmts.hpp">
+			<Option target="C0"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/instruction/instruction.h">
+			<Option target="C0_lib"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/main.cpp">
+			<Option target="C0"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/tests/simple_vm.hpp">
+			<Option target="miniplc0_test"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/tests/test_analyser.cpp">
+			<Option target="miniplc0_test"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/tests/test_main.cpp">
+			<Option target="miniplc0_test"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/tests/test_tokenizer.cpp">
+			<Option target="miniplc0_test"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/tokenizer/token.h">
+			<Option target="C0_lib"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/tokenizer/tokenizer.cpp">
+			<Option target="C0_lib"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/tokenizer/tokenizer.h">
+			<Option target="C0_lib"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/tokenizer/utils.hpp">
+			<Option target="C0_lib"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/argparse/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\3rd_party\argparse\"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\3rd_party\fmt\"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/fmt/support/cmake/cxx14.cmake">
+			<Option virtualFolder="CMake Files\3rd_party\fmt\support\cmake\"/>
+		</Unit>
+		<Unit filename="F:/Desktop/study/C0-compiler/3rd_party/catch2/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\3rd_party\catch2\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

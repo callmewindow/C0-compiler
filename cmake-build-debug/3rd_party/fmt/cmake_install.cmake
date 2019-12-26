@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/84759/Desktop/miniplc0-compiler/3rd_party/fmt
+# Install script for directory: F:/Desktop/study/C0-compiler/3rd_party/fmt
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/miniplc0")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/C0")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 

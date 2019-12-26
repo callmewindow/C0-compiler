@@ -2,589 +2,1499 @@
 
 #include <climits>
 #include <sstream>
+#include <cstring>
 #include <map>
 
-namespace miniplc0 {
-    long long getNum(std::string num)
-    {
-        std::stringstream stoi;
-        long long num_value;
-        stoi << num;
-        stoi >> num_value;
-        return num_value;
+using namespace std;
+namespace cc0 {
+#define TT TokenType
+#define opError std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrAll)
+
+    std::pair<cc0::resultInfo, std::optional<CompilationError>> Analyser::Analyse() {
+        auto err = c0Program();
+        if (err.has_value()){
+            return std::make_pair(result, err);
+        }
+        else{
+            result.funcList = funcList;
+            result.constList = constList;
+            result.globalCode = globalCode;
+            return std::make_pair(result, std::optional<CompilationError>());
+        }
     }
 
-	std::pair<std::vector<Instruction>, std::optional<CompilationError>> Analyser::Analyse() {
-		auto err = analyseProgram();
-		if (err.has_value())
-			return std::make_pair(std::vector<Instruction>(), err);
-		else
-			return std::make_pair(_instructions, std::optional<CompilationError>());
-	}
+    // <C0-program> ::=
+    //    {<variable-declaration>}{<function-definition>}
+    std::optional<CompilationError> Analyser::c0Program() {
+        std::optional<CompilationError> err;
+        std::optional<Token> next;
 
-	// <程序> ::= 'begin'<主过程>'end'
-	std::optional<CompilationError> Analyser::analyseProgram() {
-		// 示例函数，示例如何调用子程序
+        globalFlag = true;
+        globalCode.clear();
+        globalVarList.clear();
+        globalOffset = 0;
+        funcList.clear();
+        constList.clear();
 
-		// 'begin'
-		auto bg = nextToken();
-		if (!bg.has_value() || bg.value().GetType() != TokenType::BEGIN)
-			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoBegin);
-
-		// <主过程>
-		auto err = analyseMain();
-		if (err.has_value())
-			return err;
-
-		// 'end'
-		auto ed = nextToken();
-		if (!ed.has_value() || ed.value().GetType() != TokenType::END)
-			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoEnd);
-		return {};
-	}
-
-	// <主过程> ::= <常量声明><变量声明><语句序列>
-	// 需要补全
-	std::optional<CompilationError> Analyser::analyseMain() {
-		// 完全可以参照 <程序> 编写
-
-		// <常量声明>
-        auto errCD = analyseConstantDeclaration();
-        if (errCD.has_value())
-            return errCD;
-
-        // <变量声明>
-        auto errVD = analyseVariableDeclaration();
-        if (errVD.has_value())
-            return errVD;
-
-		// <语句序列>
-		auto errSS = analyseStatementSequence();
-		if (errSS.has_value())
-            return errSS;
-
-		return {};
-	}
-
-	// <常量声明> ::= {<常量声明语句>}
-	// <常量声明语句> ::= 'const'<标识符>'='<常表达式>';'
-	std::optional<CompilationError> Analyser::analyseConstantDeclaration() {
-		// 示例函数，示例如何分析常量声明
-
-		// 常量声明语句可能有 0 或无数个
-		while (true) {
-			// 预读一个 token，不然不知道是否应该用 <常量声明语句> 推导
-			// 也是除了错误之外循环终止的唯一条件
-			auto next = nextToken();
-			if (!next.has_value())
-				return {};
-			// 如果是 const 那么说明应该推导 <常量声明语句> 否则直接返回
-			if (next.value().GetType() != TokenType::CONST) {
-				unreadToken();
-				return {};
-			}
-
-			// <常量声明语句>
-			next = nextToken();
-			if (!next.has_value() || next.value().GetType() != TokenType::IDENTIFIER)
-				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNeedIdentifier);
-			// 判断重定义，其实是语义分析的内容，这里结合进行
-			if (isDeclared(next.value().GetValueString()))
-				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrDuplicateDeclaration);
-			// 添加常量，定义语句需要add
-			addConstant(next.value());
-
-			// '='
-			next = nextToken();
-			if (!next.has_value() || next.value().GetType() != TokenType::EQUAL_SIGN)
-				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrConstantNeedValue);
-
-			// <常表达式>
-			int32_t val;
-			// 综合属性传值
-			auto err = analyseConstantExpression(val);
-			if (err.has_value())
-				return err;
-
-			// ';'
-			next = nextToken();
-			if (!next.has_value() || next.value().GetType() != TokenType::SEMICOLON)
-				return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
-
-			// 生成一次 LIT 指令加载常量
-			// 此时val已经得到了值，因此插入int
-			// 指令的生成需要在声明，计算，赋值时进行，这里需要注意，且应该是分析结束后进行
-			_instructions.emplace_back(Operation::LIT, val);
-		}
-		return {};
-	}
-
-	// <变量声明> ::= {<变量声明语句>}
-	// <变量声明语句> ::= 'var'<标识符>['='<表达式>]';'
-	// 需要补全
-	std::optional<CompilationError> Analyser::analyseVariableDeclaration() {
-		// 变量声明语句可能有一个或者多个
-        while (true)
-        {
-            // 预读？
-            auto next = nextToken();
-            if (!next.has_value())
-                return {};
-            // 'var'
-            if (next.value().GetType() != TokenType::VAR) {
+        // 全局不记录栈偏移：全局变量的脚标就等于栈偏移
+        while (true) {
+            next = nextToken();
+            if (!next.has_value()) {
                 unreadToken();
                 return {};
             }
-
-            // <变量声明语句>
-            // <标识符>
-            next = nextToken();
-            if (!next.has_value() || next.value().GetType() != TokenType::IDENTIFIER)
-                return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNeedIdentifier);
-            // 是否定义，这里会检查三种，常量，未初始化变量和初始化变量，因此不必担心后续
-            if (isDeclared(next.value().GetValueString()))
-                return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrDuplicateDeclaration);
-
-            // temp存储当前标识符，基于是否初始化进行不同的add
-            auto temp = next;
-
-            // 变量可能没有初始化，仍然需要一次预读
-            // 但无论如何都需要分配空间，因此先放入一个临时值，防止出现奇怪得错误
-            _instructions.emplace_back(Operation::LIT,0);
-
-            // '='
-            // 注意是[]，所以可有有无
-            // 而且当判断不是等号后，不一定变量声明就结束，而应该判断分号，进而选择报错或继续判断声明语句
-            next = nextToken();
-            if (!next.has_value() || next.value().GetType() != TokenType::EQUAL_SIGN)
-            {
-                // 判断分号
-                if (!next.has_value() || next.value().GetType() != TokenType::SEMICOLON)
-                    return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
-                // 是分号则添加一个未初始化的变量然后继续，注意不用回退，分号已经判断完毕
-                addUninitializedVariable(temp.value());
+            // 如果是const一定是变量定义
+            if (next.value().GetType() == TT::CONST) {
+                unreadToken();
+                err = variableDeclaration();
+                if (err.has_value()) {
+              //      cout << "wrong var dec\n";
+                    return err;
+                }
                 continue;
             }
-
-            // '<表达式>'
-            // 注意，这里表达式的分析实现是不提前计算的，其实提前计算也可以，就需要和常量表达式相同传入地址
-            auto err = analyseExpression();
-            if (err.has_value())
-                return err;
-
-            // ';'
-            next = nextToken();
-            if (!next.has_value() || next.value().GetType() != TokenType::SEMICOLON)
-                return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
-
-            // 说明是初始化的变量，直接初始化
-            addVariable(temp.value());
-
-            // 虚拟机指令
-            // 这里因为计算好的表达式的值已经在栈顶了，因此首先添加变量，然后存储表达式在栈顶的值即可，相当于更新刚才LIT 0 的值
-            _instructions.emplace_back(Operation::STO, getIndex(temp.value().GetValueString()));
-        }
-		return {};
-	}
-
-	// <语句序列> ::= {<语句>}
-	// <语句> :: = <赋值语句> | <输出语句> | <空语句>
-	// <赋值语句> :: = <标识符>'='<表达式>';'
-	// <输出语句> :: = 'print' '(' <表达式> ')' ';'
-	// <空语句> :: = ';'
-	// 需要补全
-	std::optional<CompilationError> Analyser::analyseStatementSequence() {
-		while (true) {
-			// 预读
-			auto next = nextToken();
-			if (!next.has_value())
-				return {};
-			// 防止返回后预读的token消失所以需要先回退
-			// 且在调用后面的子程序时也都会预读，因此直接回退即可
-			unreadToken();
-			if (next.value().GetType() != TokenType::IDENTIFIER &&
-				next.value().GetType() != TokenType::PRINT &&
-				next.value().GetType() != TokenType::SEMICOLON) {
-				return {};
-			}
-			// 此时也有可能是其他的符号，例如等号，但是将这个错误交给end的判断进行处理即可，就是报错有点奇怪。。
-			std::optional<CompilationError> err;
-			switch (next.value().GetType()) {
-				// 这里需要你针对不同的预读结果来调用不同的子程序
-				// 注意我们没有针对空语句单独声明一个函数，因此可以直接在这里返回
-				// 注意判断结束后要break出switch，判断其他的<语句>
-                case TokenType::IDENTIFIER :
-                    err = analyseAssignmentStatement();
-                    if(err.has_value())
-                        return err;
-                    break;
-
-                case TokenType::PRINT:
-                    err = analyseOutputStatement();
-                    if(err.has_value())
-                        return err;
-                    break;
-
-                case TokenType::SEMICOLON :
-                    // 这里因为没有对应的子程序，因此回退需要取消，即将这个分号读进来，否则下一个判断会在分号无限循环
-                    next = nextToken();
-                    break;
-
-			default:
-				break;
-			}
-		}
-		return {};
-	}
-
-	// <常表达式> ::= [<符号>]<无符号整数>
-	// 需要补全
-	std::optional<CompilationError> Analyser::analyseConstantExpression(int32_t& out) {
-		// out 是常表达式的结果
-		// 这里你要分析常表达式并且计算结果
-		// 注意以下均为常表达式
-		// +1 -1 1
-		// 同时要注意是否溢出
-		// 除了这里，表达式中的计算可能会导致溢出（在+或*时，因此需要注意）
-
-        // [<符号>]
-        // 助教编写
-        auto next = nextToken();
-        auto prefix = 1;
-        if (!next.has_value())
-            return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
-        if (next.value().GetType() == TokenType::PLUS_SIGN)
-            prefix = 1;
-        else if (next.value().GetType() == TokenType::MINUS_SIGN) {
-            prefix = -1;
-            //用于产生负数，0-val
-            _instructions.emplace_back(Operation::LIT, 0);
-        }
-        else
-            unreadToken();
-
-        // <无符号整数>
-        next = nextToken();
-        if (!next.has_value() || next.value().GetType() != TokenType::UNSIGNED_INTEGER)
-            return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
-        // 综合属性赋值
-        long long tempNum = getNum(next.value().GetValueString());
-        if(tempNum > INT_MAX)
-        {
-            return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIntegerOverflow);
-        }
-        out = tempNum;
-        // 这里是不必的，因为完成后在常量赋值处会有一个加载指令的，而且顺序需要和SUB对应，也不能添加
-//        _instructions.emplace_back(Operation::LIT, out);
-
-        // 取负
-        if (prefix == -1)
-            _instructions.emplace_back(Operation::SUB, 0);
-
-        return {};
-	}
-
-	// 注意在表达式中都是被使用的，因此涉及变量的指令应为LOD和操作
-	// <表达式> ::= <项>{<加法型运算符><项>}
-	std::optional<CompilationError> Analyser::analyseExpression() {
-		// <项>
-		auto err = analyseItem();
-		if (err.has_value())
-			return err;
-
-		// {<加法型运算符><项>}
-		while (true) {
-			// 预读
-			auto next = nextToken();
-			if (!next.has_value())
-				return {};
-
-			// 终止条件，不再以+-开头
-			auto type = next.value().GetType();
-			if (type != TokenType::PLUS_SIGN && type != TokenType::MINUS_SIGN) {
-				unreadToken();
-				return {};
-			}
-
-			// <项>
-			// 在这里会向栈中加入数字，然后便可依靠后面加入的指令进行
-			err = analyseItem();
-			if (err.has_value())
-				return err;
-
-			// 根据结果生成指令，此时已经确认为两者中的一种，前面的if
-			if (type == TokenType::PLUS_SIGN)
-				_instructions.emplace_back(Operation::ADD, 0);
-			else if (type == TokenType::MINUS_SIGN)
-				_instructions.emplace_back(Operation::SUB, 0);
-		}
-		return {};
-	}
-
-	// <赋值语句> ::= <标识符>'='<表达式>';'
-	// 需要补全
-	std::optional<CompilationError> Analyser::analyseAssignmentStatement() {
-		// 这里除了语法分析以外还要留意
-		// 标识符声明过吗？
-		// 标识符是常量吗？
-		// 需要生成指令吗？
-		// 以上三条其实就是在语法分析过程中进行语义分析的过程
-		// <标识符>
-        auto next = nextToken();
-        if (!next.has_value() || next.value().GetType() != TokenType::IDENTIFIER)
-            return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNeedIdentifier);
-        // 还没有定义，错误赋值
-        if (!isDeclared(next.value().GetValueString()))
-            return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotDeclared);
-        // 常量不能改变
-        if (isConstant(next.value().GetValueString()))
-            return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrAssignToConstant);
-        // 记录标识符名字
-        std::string identifierName = next.value().GetValueString();
-
-        // '='
-        next = nextToken();
-        if (!next.has_value() || next.value().GetType() != TokenType::EQUAL_SIGN)
-            return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrConstantNeedValue);
-
-        // <表达式>
-        auto err = analyseExpression();
-        if (err.has_value())
-            return err;
-
-		// ';'
-        next = nextToken();
-        if (!next.has_value() || next.value().GetType() != TokenType::SEMICOLON)
-            return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
-
-		// 指令
-		// 此时表达式的值在栈顶，因此需要存储到对应标识符的位置
-        // 同时注意如果是对未初始化的变量，需要将其调整到初始化的列表中
-		if(isUninitializedVariable(identifierName))
-        {
-		    for(auto it = _uninitialized_vars.begin();it!=_uninitialized_vars.end();it++)
-            {
-		        if(it->first == identifierName)
-                {
-		            // 位置的索引直接替换过来，而且定义时会检测重名，因此不必担心会替换什么
-		            _vars[identifierName] = it->second;
-		            _uninitialized_vars.erase(it);
-		            break;
+            // 如果void一定是函数定义
+            if(next.value().GetType() == TT::VOID){
+                globalFlag = false;
+                unreadToken();
+                err = functionDefinition();
+                if(err.has_value()){
+               //     cout << "wrong func dec\n";
+                    return opError;
                 }
+                // 后面一定是函数定义
+                break;
+            }
+            // 如果int需要再次预读
+            if(next.value().GetType() == TT::INT){
+                next = nextToken();
+                if(!next.has_value()||next.value().GetType() != TT::IDENTIFIER){
+                    cout << "no useful identifier\n";
+                    return opError;
+                }
+                next = nextToken();
+                if(!next.has_value()){
+                    cout << "no useful value\n";
+                    return opError;
+                }
+                // 左括号一定为函数
+                if(next.value().GetType() == TT::LEFT_PARENTHESIS){
+                    globalFlag = false;
+                    unreadToken(); // 左括号
+                    unreadToken(); // 标识符
+                    unreadToken(); // INT
+                    err = functionDefinition();
+                    if(err.has_value()){
+                        cout << "wrong func dec\n";
+                        return opError;
+                    }
+                    break;
+                }
+                unreadToken(); // 当前符号
+                unreadToken(); // 标识符
+                unreadToken(); // INT
+                err = variableDeclaration();
+                if(err.has_value()){
+                    cout << "wrong var dec\n";
+                    return opError;
+                }
+                continue;
             }
         }
-        _instructions.emplace_back(Operation::STO,getIndex(identifierName));
-		return {};
-	}
-
-	// <输出语句> ::= 'print' '(' <表达式> ')' ';'
-	std::optional<CompilationError> Analyser::analyseOutputStatement() {
-		// 如果之前 <语句序列> 的实现正确，这里第一个 next 一定是 TokenType::PRINT
-		// 也就是在前面正确回退，且不用进行预读，在这里进行读取
-		auto next = nextToken();
-
-		// '('
-		next = nextToken();
-		if (!next.has_value() || next.value().GetType() != TokenType::LEFT_BRACKET)
-			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrInvalidPrint);
-
-		// <表达式>
-		auto err = analyseExpression();
-		if (err.has_value())
-			return err;
-
-		// ')'
-		next = nextToken();
-		if (!next.has_value() || next.value().GetType() != TokenType::RIGHT_BRACKET)
-			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrInvalidPrint);
-
-		// ';'
-		next = nextToken();
-		if (!next.has_value() || next.value().GetType() != TokenType::SEMICOLON)
-			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNoSemicolon);
-
-		// 生成相应的指令 WRT
-		_instructions.emplace_back(Operation::WRT, 0);
-		return {};
-	}
-
-	// <项> :: = <因子>{ <乘法型运算符><因子> }
-	// 需要补全
-	std::optional<CompilationError> Analyser::analyseItem() {
-		// 可以参考 <表达式> 实现
-        // <因子>
-        auto err = analyseFactor();
-        if (err.has_value())
-            return err;
-
-        // {<乘法型运算符><因子>}
         while (true) {
-            // 预读
-            auto next = nextToken();
-            if (!next.has_value())
-                return {};
-            // 终止条件
-            auto type = next.value().GetType();
-            if (type != TokenType::MULTIPLICATION_SIGN && type != TokenType::DIVISION_SIGN) {
+            // 判断程序结束
+            next = nextToken();
+            if (!next.has_value()) {
+                // 输入结束，判断有无main函数
+                if(getFunc("main") == -1){
+                    cout << "need main\n";
+                    return opError;
+                }
                 unreadToken();
                 return {};
             }
-
-            // <因子>
-            err = analyseFactor();
-            if (err.has_value())
+            // 如果代码最后有奇怪的东西则借助函数定义判断
+            unreadToken();
+            err = functionDefinition();
+            if (err.has_value()) {
+        //        cout << "wrong func def\n";
                 return err;
+            }
+        }
 
-            // 根据结果生成指令
-            if (type == TokenType::MULTIPLICATION_SIGN)
-                _instructions.emplace_back(Operation::MUL, 0);
-            else if (type == TokenType::DIVISION_SIGN)
-                _instructions.emplace_back(Operation::DIV, 0);
+        return {};
+    }
+
+    // 语义要求只能int类型，且const必须初始化
+    // <variable-declaration> ::=
+    //    [<const-qualifier>]<type-specifier><init-declarator-list>';'
+    std::optional<CompilationError> Analyser::variableDeclaration() {
+        bool _const;
+        std::optional<CompilationError> err;
+        auto next = nextToken();
+        if (!next.has_value()) {
+            cout << "no useful value\n";
+            return opError;
+        }
+        if (next.value().GetType() == TT::CONST) {
+            _const = true;
+        } else {
+            unreadToken();
+            _const = false;
+        }
+        // 变量类型此时只能是int
+        next = nextToken();
+        if(!next.has_value()||next.value().GetType() != TT::INT){
+            cout << "var need int \n";
+            return opError;
+        }
+        // 如果多类型还需要传入type
+        err = initDeclaratorList(_const);
+        if (err.has_value()) {
+      //      cout << "wrong init dec list\n";
+            return err;
+        }
+
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::SEMICOLON) {
+            cout << "no semicolon\n";
+            return opError;
+        }
+
+        return {};
+    }
+
+    // <init-declarator-list> ::=
+    //    <init-declarator>{','<init-declarator>}
+    std::optional<CompilationError> Analyser::initDeclaratorList(bool isConst) {
+        auto err = initDeclarator(isConst);
+        if(err.has_value()) {
+            cout << "wrong init dec\n";
+            return opError;
+        }
+        while (true) {
+            auto next = nextToken();
+            if (!next.has_value() || next.value().GetType() != TT::COMMA) {
+                unreadToken();
+                return {};
+            }
+            // 是逗号，进行定义
+            err = initDeclarator(isConst);
+            if (err.has_value()) {
+        //        cout << "wrong init dec\n";
+                return err;
+            }
         }
         return {};
-	}
+    }
 
-	// <因子> ::= [<符号>]( <标识符> | <无符号整数> | '('<表达式>')' )
-	// 需要补全
-	std::optional<CompilationError> Analyser::analyseFactor() {
-		// [<符号>]
-		auto next = nextToken();
-		auto prefix = 1;
-		if (!next.has_value())
-			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
-		if (next.value().GetType() == TokenType::PLUS_SIGN)
-			prefix = 1;
-		else if (next.value().GetType() == TokenType::MINUS_SIGN) {
-			prefix = -1;
-			_instructions.emplace_back(Operation::LIT, 0);
-		}
-		else
-			unreadToken();
+    // <init-declarator> ::=
+    //    <identifier>[<initializer>]
+    // <initializer> ::=
+    //    '='<expression>
+    std::optional<CompilationError> Analyser::initDeclarator(bool isConst) {
+        varInfo tempVar;
+        std::pair<string,string> tempPair;
+        tempVar.isConst = isConst;
+        auto next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::IDENTIFIER) {
+            cout << "no identifier\n";
+            return opError;
+        }
+        tempVar.varName = next.value().GetValueString();
+        if(globalFlag){
+            // 全局只需考虑全局和函数
+            if(isDeclared(tempVar.varName,"global")||getFunc(tempVar.varName)!=-1){
+                cout << "duplicated dec\n";
+                return opError;
+            }
+            globalVarList.emplace_back(tempVar);
+            tempPair = getVar(tempVar.varName);
+            if(tempPair.first == "-"){
+                cout << "no useful var\n";
+                return opError;
+            }
+            // 变量占位
+            globalCode.emplace_back(IPUSH,defaultValue);
+            globalCode.emplace_back(LOADA,tempPair.first,tempPair.second);
+//            cout << tempVar.isConst <<" int "<< tempVar.varName << '\n';
+        }else{
+            // 局部的话只需要考虑当前作用域
+            // 声明为参数的标识符，在同级作用域中只能被声明一次，可以覆盖全局的
+            // 此时不是全局变量定义，因此可以有全局变量定义，只需判断local即可
+            if(isDeclared(tempVar.varName,"local")){
+                cout << "duplicated dec\n";
+                return opError;
+            }
+            localVarList.emplace_back(tempVar);
+            tempPair = getVar(tempVar.varName);
+            if(tempPair.first == "-"){
+                cout << "no usrful var\n";
+                return opError;
+            }
+            // 变量占位
+            localCode.emplace_back(IPUSH,defaultValue);
+            localCode.emplace_back(LOADA,tempPair.first,tempPair.second);
+//            cout << tempVar.isConst <<" int "<< tempVar.varName << '\n';
+        }
 
-		// 预读
-		next = nextToken();
-		if (!next.has_value())
-			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
-
-		std::optional<CompilationError> err;
-		long long tempNum;
-		switch (next.value().GetType()) {
-			// 这里和 <语句序列> 类似，需要根据预读结果调用不同的子程序
-			// 但是要注意 default 返回的是一个编译错误
-			// 且需要注意的是，这里因为有不必回退的，因此回退需要在部分case中进行
-
-            case TokenType::IDENTIFIER :
-                // 这里就不必再判断了，因此此处只需有标识符即可，但是需要判断是否已经初始化
-//                err = analyseAssignmentStatement();
-//                if(err.has_value())
-//                    return err;
-                // 如果不是 已经初始化的变量或常量 就报错，否则加载它的值（包括未定义和未初始化两种），报错情况最好也分开
-                if(!isInitializedVariable(next.value().GetValueString())&&!isConstant(next.value().GetValueString()))
-                {
-                    // 未初始化
-                    if(isUninitializedVariable(next.value().GetValueString()))
-                    {
-                        return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotInitialized);
-                    }
-                    // 未定义
-                    return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrNotDeclared);
-                }
-                // 正常已定义，找值加载
-                _instructions.emplace_back(Operation::LOD, getIndex(next.value().GetValueString()));
-                break;
-
-            case TokenType::UNSIGNED_INTEGER :
-                // 这里需要取值然后进行虚拟机指令
-                tempNum = getNum(next.value().GetValueString());
-                if(tempNum > INT_MAX)
-                {
-                    return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIntegerOverflow);
-                }
-                _instructions.emplace_back(Operation::LIT, (int32_t)tempNum);
-                break;
-
-            case TokenType::LEFT_BRACKET:
-                // 此时左括号已经判断，所以直接判断<表达式即可>
-                err = analyseExpression();
-                if (err.has_value())
+        // 预读判断初始化
+        if(isConst){
+            next = nextToken();
+            if (!next.has_value() || next.value().GetType() != TT::EQUAL_SIGN) {
+                cout << "const need init\n";
+                return opError;
+            }
+            auto err = normalExpression();
+            if (err.has_value()) {
+       //         cout << "wrong expression\n";
+                return err;
+            }
+            if(globalFlag){
+                globalCode.emplace_back(ISTORE);
+            }else{
+                localCode.emplace_back(ISTORE);
+            }
+            return {};
+        }else{
+            next = nextToken();
+            if (next.has_value() && next.value().GetType() == TT::EQUAL_SIGN) {
+                auto err = normalExpression();
+                if (err.has_value()) {
+           //         cout << "wrong expression\n";
                     return err;
+                }
+                if(globalFlag){
+                    globalCode.emplace_back(ISTORE);
+                }else{
+                    localCode.emplace_back(ISTORE);
+                }
+                return {};
+            } else {
+                unreadToken();
+                if(globalFlag){
+                    globalCode.emplace_back(IPUSH,defaultValue);
+                    globalCode.emplace_back(ISTORE);
+                }else{
+                    localCode.emplace_back(IPUSH,defaultValue);
+                    localCode.emplace_back(ISTORE);
+                }
+                return {};
+            }
+        }
+        return {};
+    }
 
-                // ')'
-                next = nextToken();
-                if (!next.has_value() || next.value().GetType() != TokenType::RIGHT_BRACKET)
-                    // 注意因子属于项，项属于表达式，所以如果出错直接不完整的表达式即可，其实是助教懒得弄左右括号的错误了
-                    return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
+    // <function-definition> ::=
+    //    <type-specifier><identifier><parameter-clause><compound-statement>
+    // 函数栈的栈偏移借助localOffset进行
+    // 函数中的控制流，如果存在没有返回语句的分支，这些分支的具体返回值是未定义行为
+    // 为了方便，和变量一样，int类型return则就返回值默认为0
+    // 但是汇编必须保证每一种控制流分支都能够返回（没有return也能返回）。
+    std::optional<CompilationError> Analyser::functionDefinition() {
+        // 更新局部变量表和局部指令集
+        localVarList.clear();
+        localCode.clear();
+        localOffset = 0;
+        resetFunc();
+        funcNow.isReturn = false;
+        auto next = nextToken();
+        if(!next.has_value()){
+            cout << "no usrful value\n";
+            return opError;
+        }
+        if(next.value().GetType() == TT::VOID) {
+            funcNow.funcType = "void";
+        }else{
+            if(next.value().GetType() == TT::INT){
+                // 先直接int，因为函数没有返回值直接默认即可
+                funcNow.funcType = "int";
+            }else{
+                cout << "func type error \n";
+                return opError;
+            }
+        }
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::IDENTIFIER) {
+            cout << "no func name\n";
+            return opError;
+        }
+        funcNow.funcName = next.value().GetValueString();
+        // 一定全局，直接判断重名
+        if(isDeclared(funcNow.funcName,"global")||getFunc(funcNow.funcName) != -1){
+            cout << "duplicated dec\n";
+            return opError;
+        }
+        funcNow.paramNum = 0;
+        auto err = parameterClause(funcNow.paramNum);
+        if (err.has_value()) {
+      //      cout << "wrong param clause\n";
+            return err;
+        }
+        // 更新函数指令集
+        funcNow.localCode = localCode;
+        constInfo tempConst;
+        tempConst.type = 'S';
+        tempConst.value = '\"'+funcNow.funcName+'\"';
+        constList.emplace_back(tempConst);
+        funcNow.constOffset = constList.size()-1;
+        // 先更新偏移再入栈
+        funcList.emplace_back(funcNow);
+//        cout << funcNow.funcType << ' ' << funcNow.funcName << ' ' << funcNow.paramNum << '\n';
+        err = compoundStatement();
+        if (err.has_value()) {
+    //        cout << "wrong compound\n";
+            return err;
+        }
+        // 保存函数的代码然后更新
+        if(!funcNow.isReturn){
+            localCode.emplace_back(RET);
+        }
+        funcNow.localCode = localCode;
+        funcList.back() = funcNow;
+        return {};
+    }
+
+    // <parameter-clause> ::=
+    //    '(' [<parameter-declaration-list>] ')'
+    std::optional<CompilationError> Analyser::parameterClause(int& paramNum) {
+        auto next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::LEFT_PARENTHESIS) {
+            cout << "no left ( \n";
+            return opError;
+        }
+
+        next = nextToken();
+        if (next.has_value() && next.value().GetType() == TT::RIGHT_PARENTHESIS) {
+            paramNum = 0;
+            return {};
+        } else {
+            unreadToken();
+            auto err = parameterDeclarationList(paramNum);
+            if (err.has_value()) {
+       //         cout << "wrong param dec list\n";
+                return err;
+            }
+            next = nextToken();
+            if (!next.has_value() || next.value().GetType() != TT::RIGHT_PARENTHESIS) {
+                cout << "no right ) \n";
+                return opError;
+            }
+            return {};
+        }
+        return {};
+    }
+
+    // <parameter-declaration-list> ::=
+    //    <parameter-declaration>{','<parameter-declaration>}
+    std::optional<CompilationError> Analyser::parameterDeclarationList(int& paramNum) {
+        auto err = parameterDeclaration();
+        if (err.has_value()) {
+      //      cout << "wrong param dec\n";
+            return err;
+        }
+        paramNum++;
+        while (true) {
+            // 判断first
+            auto next = nextToken();
+            if (next.has_value() && next.value().GetType() == TT::COMMA) {
+                err = parameterDeclaration();
+                if (err.has_value()) {
+             //       cout << "wrong param dec\n";
+                    return err;
+                }
+                paramNum++;
+            } else {
+                // 未使用回退
+                unreadToken();
+                return {};
+            }
+        }
+    }
+
+    // 同样有不能void的语义要求
+    // <parameter-declaration> ::=
+    //    [<const-qualifier>]<type-specifier><identifier>
+    // 函数内部如果存在与其同名的变量或参数，将导致无法在此函数内调用自身（无法递归）
+    std::optional<CompilationError> Analyser::parameterDeclaration() {
+        varInfo tempVar;
+        auto next = nextToken();
+        if (next.has_value() && next.value().GetType() == TT::CONST) {
+            tempVar.isConst = true;
+        } else {
+            tempVar.isConst = false;
+            unreadToken();
+        }
+        // 检测类型
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::INT) {
+            cout << "var type error \n";
+            return opError;
+        }
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::IDENTIFIER) {
+            cout << "need identifier\n";
+            return opError;
+        }
+        tempVar.varName = next.value().GetValueString();
+        // 此时globalFlag一定是false，只用判断局部
+        // 如果定义了但是是全局的也是正常的
+        if(isDeclared(tempVar.varName,"local")){
+            cout << "duplicated dec\n";
+            return opError;
+        }
+        localVarList.emplace_back(tempVar);
+        std::pair<string,string> tempPair = getVar(tempVar.varName);
+        if(tempPair.first == "-"){
+            cout << "no useful value\n";
+            return opError;
+        }
+        // 变量占位
+        localCode.emplace_back(IPUSH,defaultValue);
+        // 局部变量不用
+//        localCode.emplace_back(LOADA,tempPair.first,tempPair.second);
+//        cout << tempVar.isConst <<" int "<< tempVar.varName << '\n';
+        return {};
+    }
+
+    // <compound-statement> ::=
+    //    '{' {<variable-declaration>} <statement-seq> '}'
+    std::optional<CompilationError> Analyser::compoundStatement() {
+        std::optional<CompilationError> err;
+        auto next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::LEFT_BRACE) {
+            cout << "no left { \n";
+            return opError;
+        }
+        // 预读进行变量声明
+        while (true) {
+            next = nextToken();
+            if (next.has_value()) {
+                auto type = next.value().GetType();
+                if (type == TT::CONST || type == TT::INT) {
+                    // 回退标识符
+                    unreadToken();
+                    err = variableDeclaration();
+                    if (err.has_value()) {
+              //          cout << "wrong var dec\n";
+                        return err;
+                    }
+                } else {
+                    // 不是变量定义
+                    unreadToken();
+                    break;
+                }
+            } else {
+                // 无值
+                unreadToken();
                 break;
+            }
+        }
+        err = statementSequence();
+        if (err.has_value()) {
+        //    cout << "wrong state seq\n";
+            return err;
+        }
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::RIGHT_BRACE) {
+            cout << "no right ) \n";
+            return opError;
+        }
+        return {};
+    }
 
-		default:
-			return std::make_optional<CompilationError>(_current_pos, ErrorCode::ErrIncompleteExpression);
-		}
+    // <statement-seq> ::=
+    //	{<statement>}
+    std::optional<CompilationError> Analyser::statementSequence() {
+        while (true) {
+            // 预读判断follow集而不是判断first集（first集太大）
+            auto next = nextToken();
+            if (next.has_value() && next.value().GetType() == TT::RIGHT_BRACE) {
+                // 不要提前使用，按照语法来
+                unreadToken();
+                return {};
+            }
+            unreadToken();
+            auto err = normalStatement();
+            if (err.has_value()) {
+           //     cout << "wrong state\n";
+                return err;
+            }
+        }
+        return {};
+    }
 
-		// 取负，0-num形成-num
-		if (prefix == -1)
-			_instructions.emplace_back(Operation::SUB, 0);
-		return {};
-	}
+    // <statement> ::=
+    //     '{' <statement-seq> '}'      # {
+    //    |<condition-statement>        # if
+    //    |<loop-statement>             # while
+    //    |<jump-statement>             # return
+    //    |<print-statement>            # print
+    //    |<scan-statement>             # scan
+    //    |<assignment-expression>';'   # identifier + =
+    // 注：只有这里直接判断短的函数调用，可以忽略返回值，其他地方都是需要利用的
+    // 因此直接在expression中使用到func call的地方必须全有返回值
+    //    |<function-call>';'           # identifier + (
+    //    |';'
+    std::optional<CompilationError> Analyser::normalStatement() {
+        std::optional<CompilationError> err;
+        auto next = nextToken();
+        if (!next.has_value()) {
+            cout << "no usrful value\n";
+            return opError;
+        }
+        // 预读first集
+        switch (next.value().GetType()) {
+            case SEMICOLON:
+                break;
+            case IF:
+                unreadToken();
+                err = conditionStatement();
+                if (err.has_value()) {
+            //        cout << "wrong condition state\n";
+                    return err;
+                }
+                break;
+            case WHILE:
+                unreadToken();
+                err = loopStatement();
+                if (err.has_value()) {
+             //       cout << "wrong loop state\n";
+                    return err;
+                }
+                break;
+            case RETURN:
+                unreadToken();
+                err = jumpStatement();
+                if (err.has_value()) {
+               //     cout << "wrong jump state\n";
+                    return err;
+                }
+                break;
+            case PRINT:
+                unreadToken();
+                err = printStatement();
+                if (err.has_value()) {
+              //      cout << "wrong print state\n";
+                    return err;
+                }
+                break;
+            case SCAN:
+                unreadToken();
+                err = scanStatement();
+                if (err.has_value()) {
+            //        cout << "wrong scan state\n";
+                    return err;
+                }
+                break;
+            case LEFT_BRACE:
+                err = statementSequence();
+                if (err.has_value()) {
+            //        cout << "wrong state seq\n";
+                    return err;
+                }
+                next = nextToken();
+                if (!next.has_value() || next.value().GetType() != TT::RIGHT_BRACE) {
+                    cout << "no right } \n";
+                    return opError;
+                }
+                break;
+            case IDENTIFIER:
+                next = nextToken();
+                if (next.has_value()) {
+                    auto type = next.value().GetType();
+                    // 赋值
+                    if (type == TT::EQUAL_SIGN) {
+                        unreadToken();
+                        unreadToken();
+                        err = assignmentExpression();
+                        if (err.has_value()) {
+                //            cout << "wrong assign expre\n";
+                            return err;
+                        }
+                        next = nextToken();
+                        if (!next.has_value() || next.value().GetType() != TT::SEMICOLON) {
+                            cout << "no semicolon\n";
+                            return opError;
+                        }
+                        break;
+                    }
+                    // 函数调用
+                    if (type == TT::LEFT_PARENTHESIS) {
+                        unreadToken();
+                        unreadToken();
+                        err = functionCall();
+                        if (err.has_value()) {
+                      //      cout << "wrong func call\n";
+                            return err;
+                        }
+                        next = nextToken();
+                        if (!next.has_value() || next.value().GetType() != TT::SEMICOLON) {
+                            cout << "no semicolon\n";
+                            return opError;
+                        }
+                        break;
+                    }
+                    // 相当于default
+                    return opError;
+                }else{
+                    // 只有变量名没有后续
+                    return opError;
+                }
+                break;
+            default:
+                return opError;
+        }
+        return {};
+    }
 
-	std::optional<Token> Analyser::nextToken() {
-		if (_offset == _tokens.size())
-			return {};
-		// 考虑到 _tokens[0..._offset-1] 已经被分析过了
-		// 所以我们选择 _tokens[0..._offset-1] 的 EndPos 作为当前位置
-		_current_pos = _tokens[_offset].GetEndPos();
-		return _tokens[_offset++];
-	}
+    // <function-call> ::=
+    //    <identifier> '(' [<expression-list>] ')'
+    std::optional<CompilationError> Analyser::functionCall() {
+        auto next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::IDENTIFIER) {
+            cout << "need identifier\n";
+            return opError;
+        }
+        string tempName = next.value().GetValueString();
+        // 使用时同样需要判断是否存在
+        // 如果是本地变量（覆盖了函数名）或者不是函数
+        if(isDeclared(tempName,"local")||getFunc(tempName) == -1){
+            cout << "no such func\n";
+            return opError;
+        }
+        funcInfo funcTemp = funcList[getFunc(tempName)];
+//        cout << next.value().GetValueString() << " call" << '\n';
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::LEFT_PARENTHESIS) {
+            cout << "loss left ) \n";
+            return opError;
+        }
+        // 预读判断有没有表达式列表
+        next = nextToken();
+        if (next.has_value() && next.value().GetType() == TT::RIGHT_PARENTHESIS) {
+            // 比较参数个数
+            if(funcTemp.paramNum!=0){
+                cout << "wrong param num \n";
+                return opError;
+            }
+            // 一定不是全局
+            localCode.emplace_back(CALL,to_string(funcTemp.constOffset));
+            return {};
+        } else {
+            unreadToken();
+            int paramNum = 0;
+            auto err = expresionList(paramNum);
+            // 同步判断
+            if (err.has_value()||paramNum!=funcTemp.paramNum) {
+          //      cout << "wrong expresion list\n";
+                return err;
+            }
+            next = nextToken();
+            if (!next.has_value() || next.value().GetType() != TT::RIGHT_PARENTHESIS) {
+                cout << "no right ) \n";
+                return opError;
+            }
+            localCode.emplace_back(CALL,to_string(funcTemp.constOffset));
+            return {};
+        }
+        return {};
+    }
 
-	void Analyser::unreadToken() {
-		if (_offset == 0)
-			DieAndPrint("analyser unreads token from the begining.");
-		// 虚假的unreadToken
-		_current_pos = _tokens[_offset - 1].GetEndPos();
-		_offset--;
-	}
+    // <expression-list> ::=
+    //    <expression>{','<expression>}
+    std::optional<CompilationError> Analyser::expresionList(int& paramNum) {
+        auto err = normalExpression();
+        if (err.has_value()) {
+        //    cout << "wrong expression\n";
+            return err;
+        }
+        paramNum++;
+        while (true) {
+            auto next = nextToken();
+            if (next.has_value() && next.value().GetType() == TT::COMMA) {
+                err = normalExpression();
+                if (err.has_value()) {
+              //      cout << "wrong expression\n";
+                    return err;
+                }
+                paramNum++;
+            } else {
+                unreadToken();
+                return {};
+            }
+        }
+        return {};
+    }
 
-	void Analyser::_add(const Token& tk, std::map<std::string, int32_t>& mp) {
-		if (tk.GetType() != TokenType::IDENTIFIER)
-			DieAndPrint("only identifier can be added to the table.");
-		// 在保存变量的同时记录了变量在符号表中的位置
-		mp[tk.GetValueString()] = _nextTokenIndex;
-		_nextTokenIndex++;
-	}
+    // <assignment-expression> ::=
+    //    <identifier><assignment-operator><expression>
+    std::optional<CompilationError> Analyser::assignmentExpression() {
+        auto next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::IDENTIFIER) {
+            cout << "no identifier\n";
+            return opError;
+        }
+        string tempName = next.value().GetValueString();
+        if(((!isDeclared(tempName,"local"))&&(!isDeclared(tempName,"global")))||getFunc(tempName)!=-1||isConst(tempName)){
+            cout << "no useful var to assign: " << tempName << '\n';
+            return opError;
+        }
+        std::pair<std::string,std::string> tempPair;
+        // 看是不是局部变量
+        if(isDeclared(tempName,"local")){
+            if(isConst(tempName)){
+                cout << "const can not be assign\n";
+                return opError;
+            }
+            tempPair = getVar(tempName);
+            if(tempPair.first == "-"){
+                cout << "no usrful var\n";
+                return opError;
+            }
+            localCode.emplace_back(LOADA,tempPair.first,tempPair.second);
+            // 不使用值，不加载
+//            localCode.emplace_back(ILOAD);
+        }else{
+            // 看是不是全局
+            if(isDeclared(tempName,"global")){
+                if(isConst(tempName)){
+                    cout << "const can not be assign\n";
+                    return opError;
+                }
+                tempPair = getVar(tempName);
+                if(tempPair.first == "-"){
+                    cout << "no usrful var\n";
+                    return opError;
+                }
+                if(globalFlag){
+                    globalCode.emplace_back(LOADA,tempPair.first,tempPair.second);
+                }else{
+                    localCode.emplace_back(LOADA,tempPair.first,tempPair.second);
+                }
+            }else{
+                cout << "var need dec\n";
+                return opError;
+            }
+        }
 
-	void Analyser::addVariable(const Token& tk) {
-		_add(tk, _vars);
-	}
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::EQUAL_SIGN) {
+            cout << "assign need equal\n";
+            return opError;
+        }
+        // 预读？
+        auto err = normalExpression();
+        if (err.has_value()) {
+           // cout << "wrong expression\n";
+            return err;
+        }
+        if(globalFlag){
+            globalCode.emplace_back(ISTORE);
+        }else{
+            localCode.emplace_back(ISTORE);
+        }
 
-	void Analyser::addConstant(const Token& tk) {
-		_add(tk, _consts);
-	}
+        return {};
+    }
 
-	void Analyser::addUninitializedVariable(const Token& tk) {
-		_add(tk, _uninitialized_vars);
-	}
+    // <jump-statement> ::= <return-statement>
+    std::optional<CompilationError> Analyser::jumpStatement() {
+        std::optional<CompilationError> err;
+        auto next = nextToken();
+        if (!next.has_value()) {
+            cout << "no useful value\n";
+            return opError;
+        }
+        if(next.value().GetType() == TT::RETURN){
+            unreadToken();
+            err = returnStatement();
+            if(err.has_value()){
+         //       cout << "wrong return\n";
+                return err;
+            }
+            return {};
+        }
+        return opError;
+    }
 
-	// 从此处可以获得变量的存储位置
-	int32_t Analyser::getIndex(const std::string& s) {
-		if (_uninitialized_vars.find(s) != _uninitialized_vars.end())
-			return _uninitialized_vars[s];
-		else if (_vars.find(s) != _vars.end())
-			return _vars[s];
-		else
-			return _consts[s];
-	}
+    // <return-statement> ::= 'return' [<expression>] ';'
+    std::optional<CompilationError> Analyser::returnStatement() {
+        auto next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::RETURN) {
+            cout  << "loss return\n";
+            return opError;
+        }
+        // return一定在函数中
+        if(funcNow.funcType == "void"){
+            next = nextToken();
+            // 如果返回，必须无值
+            if(!next.has_value()||next.value().GetType() != TT::SEMICOLON){
+                funcNow.isReturn = true;
+                localCode.emplace_back(RET);
+                cout  << "no semicolon\n";
+                return opError;
+            }
+            return {};
+        }
+        if(funcNow.funcType == "int"){
+            next = nextToken();
+            // int则必须有值
+            if(!next.has_value()||next.value().GetType() == TT::SEMICOLON){
+                cout  << "int need return value\n";
+                return opError;
+            }
+            unreadToken();
+            auto err = normalExpression();
+            if(err.has_value()){
+        //        cout << "wrong expre\n";
+                return err;
+            }
+            // 也要注意判断分号
+            next = nextToken();
+            if(!next.has_value()||next.value().GetType() != TT::SEMICOLON){
+                cout  << "no semicolon\n";
+                return opError;
+            }
+            funcNow.isReturn = true;
+            localCode.emplace_back(IRET);
+            return {};
+        }
+        cout << "funcNow error\n";
+        return opError;
+    }
 
-	bool Analyser::isDeclared(const std::string& s) {
-		return isConstant(s) || isUninitializedVariable(s) || isInitializedVariable(s);
-	}
+    // <condition-statement> ::=
+    //    'if' '(' <condition> ')' <statement> ['else' <statement>]
+    std::optional<CompilationError> Analyser::conditionStatement() {
+        auto next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::IF) {
+            cout << "no if\n";
+            return opError;
+        }
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::LEFT_PARENTHESIS) {
+            cout << "no left ( \n";
+            return opError;
+        }
+        auto err = normalCondition();
+        if (err.has_value()) {
+        //    cout << "wrong condition\n";
+            return err;
+        }
+        unsigned long long conditionEnd = localCode.size()-1;
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::RIGHT_PARENTHESIS) {
+            cout << "no right ) \n";
+            return opError;
+        }
+        err = normalStatement();
+        if (err.has_value()) {
+        //    cout << "wrong statement\n";
+            return err;
+        }
+        localCode[conditionEnd] = Instruction(localCode[conditionEnd].GetOperation(),to_string(localCode.size()));
 
-	bool Analyser::isUninitializedVariable(const std::string& s) {
-		return _uninitialized_vars.find(s) != _uninitialized_vars.end();
-	}
-	bool Analyser::isInitializedVariable(const std::string&s) {
-		return _vars.find(s) != _vars.end();
-	}
+        next = nextToken();
+        if (next.has_value() && next.value().GetType() == TT::ELSE) {
+            localCode.emplace_back(JMP);
+            // 更新if的jump
+            localCode[conditionEnd] = Instruction(localCode[conditionEnd].GetOperation(),to_string(localCode.size()));
+            unsigned long long jumpEnd = localCode.size()-1;
+            err = normalStatement();
+            if (err.has_value()) {
+         //       cout << "wrong statement\n";
+                return err;
+            }
+            localCode[jumpEnd] = Instruction(localCode[jumpEnd].GetOperation(),to_string(localCode.size()));
+        } else {
+            unreadToken();
+            return {};
+        }
+        return {};
+    }
 
-	bool Analyser::isConstant(const std::string&s) {
-		return _consts.find(s) != _consts.end();
-	}
+    // <condition> ::=
+    //     <expression>[<relational-operator><expression>]
+    std::optional<CompilationError> Analyser::normalCondition() {
+        auto err = normalExpression();
+        if (err.has_value()) {
+     //       cout << "wrong expression\n";
+            return err;
+        }
+        auto next = nextToken();
+        if (!next.has_value()) {
+            // 无值的返回也需要回退，因为会再读一次
+            unreadToken();
+            return {};
+        }
+        auto type = next.value().GetType();
+        switch (type){
+            case LESS_SIGN:
+            case LESS_EQUAL_SIGN:
+            case MORE_SIGN:
+            case MORE_EQUAL_SIGN:
+            case NOT_EQUAL_SIGN:
+            case VALUE_EQUAL_SIGN:
+                break;
+            default:
+                // 未使用的回退
+                unreadToken();
+                // 此时需要判断栈顶的值是否为0，0则是false，其余均为true
+                localCode.emplace_back(IPUSH,defaultValue);
+                localCode.emplace_back(ICMP);
+                localCode.emplace_back(JE);
+                return {};
+        }
+        err = normalExpression();
+        if (err.has_value()) {
+     //       cout << "wrong expression\n";
+            return err;
+        }
+        switch (type){
+            case LESS_SIGN:
+                localCode.emplace_back(ICMP);
+                localCode.emplace_back(JGE);
+                break;
+            case LESS_EQUAL_SIGN:
+                localCode.emplace_back(ICMP);
+                localCode.emplace_back(JG);
+                break;
+            case MORE_SIGN:
+                localCode.emplace_back(ICMP);
+                localCode.emplace_back(JLE);
+                break;
+            case MORE_EQUAL_SIGN:
+                localCode.emplace_back(ICMP);
+                localCode.emplace_back(JL);
+                break;
+            case NOT_EQUAL_SIGN:
+                localCode.emplace_back(ICMP);
+                localCode.emplace_back(JE);
+                break;
+            case VALUE_EQUAL_SIGN:
+                localCode.emplace_back(ICMP);
+                localCode.emplace_back(JNE);
+                break;
+            default:
+                return {};
+        }
+        return {};
+    }
+
+    // <loop-statement> ::=
+    //    'while' '(' <condition> ')' <statement>
+    std::optional<CompilationError> Analyser::loopStatement() {
+        auto next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::WHILE) {
+            cout << "no while\n";
+            return opError;
+        }
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::LEFT_PARENTHESIS) {
+            cout << "no left ( \n";
+            return opError;
+        }
+        auto conditionBegin = localCode.size();
+        auto err = normalCondition();
+        if (err.has_value()) {
+      //      cout << "wrong condition\n";
+            return err;
+        }
+        auto conditionEnd = localCode.size()-1;
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::RIGHT_PARENTHESIS) {
+            cout << "no right ( \n";
+            return opError;
+        }
+        err = normalStatement();
+        if (err.has_value()) {
+    //        cout << "wrong statement\n";
+            return err;
+        }
+        localCode.emplace_back(JMP,to_string(conditionBegin));
+        localCode[conditionEnd] = Instruction(localCode[conditionEnd].GetOperation(),to_string(localCode.size()));
+        return {};
+    }
+
+    // <scan-statement>  ::= 'scan' '(' <identifier> ')' ';'
+    std::optional<CompilationError> Analyser::scanStatement() {
+        auto next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::SCAN) {
+            cout << "need scan\n";
+            return opError;
+        }
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::LEFT_PARENTHESIS) {
+            cout << "no left ( \n";
+            return opError;
+        }
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::IDENTIFIER) {
+            cout << "scan need var\n";
+            return opError;
+        }
+        string tempName = next.value().GetValueString();
+        // 判断是否合法
+        if(((!isDeclared(tempName,"local"))&&(!isDeclared(tempName,"global")))||getFunc(tempName)!=-1||isConst(tempName)){
+            cout << "no such var\n";
+            return opError;
+        }
+        std::pair<std::string,std::string> tempPair = getVar(tempName);
+        if(tempPair.first == "-"){
+            cout << "no usrful value\n";
+            return opError;
+        }
+        localCode.emplace_back(LOADA,tempPair.first,tempPair.second);
+
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::RIGHT_PARENTHESIS) {
+            cout << "no right ) \n";
+            return opError;
+        }
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::SEMICOLON) {
+            cout << "no semicolon\n";
+            return opError;
+        }
+
+        localCode.emplace_back(ISCAN);
+        localCode.emplace_back(ISTORE);
+
+        return {};
+    }
+
+    // <print-statement> ::= 'print' '(' [<printable-list>] ')' ';'
+    std::optional<CompilationError> Analyser::printStatement() {
+        auto next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::PRINT) {
+            cout << "need print\n";
+            return opError;
+        }
+        next = nextToken();
+        if (!next.has_value() || next.value().GetType() != TT::LEFT_PARENTHESIS) {
+            cout << "no left ( \n";
+            return opError;
+        }
+        // 预读判断follow
+        next = nextToken();
+        if (next.has_value() && next.value().GetType() == TT::RIGHT_PARENTHESIS) {
+            cout << "no right ) \n";
+            next = nextToken();
+            if (!next.has_value() || next.value().GetType() != TT::SEMICOLON) {
+                cout << "no semicolon\n";
+                return opError;
+            }
+        } else {
+            unreadToken();
+            auto err = printableList();
+            if (err.has_value()) {
+        //        cout << "wrong print list\n";
+                return err;
+            }
+            next = nextToken();
+            if (!next.has_value() || next.value().GetType() != TT::RIGHT_PARENTHESIS) {
+                cout << "no right ( \n";
+                return opError;
+            }
+            next = nextToken();
+            if (!next.has_value() || next.value().GetType() != TT::SEMICOLON) {
+                cout << "no semicolon\n";
+                return opError;
+            }
+        }
+        return {};
+    }
+
+    // <printable-list>  ::= <printable> {',' <printable>}
+    std::optional<CompilationError> Analyser::printableList() {
+        auto err = printable();
+        if (err.has_value()) {
+      //      cout << "wrong print\n";
+            return err;
+        }
+        while (true) {
+            auto next = nextToken();
+            if (next.has_value() && next.value().GetType() == TT::COMMA) {
+                // 输出空格
+                localCode.emplace_back(IPUSH,"32");
+                localCode.emplace_back(CPRINT);
+                err = printable();
+                if (err.has_value()) {
+           //         cout << "wrong print\n";
+                    return err;
+                }
+                // 多个print需要加空格
+            } else {
+                // 输出结束，输出回车
+                localCode.emplace_back(PRINTL);
+                unreadToken();
+                return {};
+            }
+        }
+        return {};
+    }
+
+    // <printable> ::=
+    //    <expression> | <string-literal> | <char-literal> # 有扩展
+    std::optional<CompilationError> Analyser::printable() {
+        auto next = nextToken();
+        // 字面量
+        if (next.has_value() && (next.value().GetType() == TT::STRING || next.value().GetType() == TT::CHAR)) {
+            if(next.value().GetType() == TT::STRING){
+                std::string str = next.value().GetValueString();
+                constInfo tempConst;
+                tempConst.type = 'S';
+                tempConst.value = '\"'+str.substr(1,str.length()-2)+'\"';
+                constList.emplace_back(tempConst);
+                localCode.emplace_back(LOADC,to_string(constList.size()-1));
+                localCode.emplace_back(SPRINT);
+            }else{
+                if(next.value().GetType() == TT::CHAR){
+                    std::string str = next.value().GetValueString();
+                    constInfo tempConst;
+                    tempConst.type = 'S';
+                    tempConst.value = '\"'+str.substr(1,str.length()-2)+'\"';
+                    constList.emplace_back(tempConst);
+                    localCode.emplace_back(LOADC,to_string(constList.size()-1));
+                    localCode.emplace_back(SPRINT);
+                }else{
+                    unreadToken();
+                }
+            }
+            return {};
+        } else {
+            unreadToken();
+        }
+        // 表达式
+        auto err = normalExpression();
+        if (err.has_value()) {
+        //    cout << "wrong expression\n";
+            return err;
+        }
+        localCode.emplace_back(IPRINT);
+        return {};
+    }
+
+    // <expression> ::=
+    //    <additive-expression>
+    std::optional<CompilationError> Analyser::normalExpression() {
+        auto err = additiveExpression();
+        if (err.has_value()) {
+          //  cout << "wrong add expression\n";
+            return err;
+        }
+        return {};
+    }
+
+    // <additive-expression> ::= # 加减表达式
+    //     <multiplicative-expression>{<additive-operator><multiplicative-expression>}
+    std::optional<CompilationError> Analyser::additiveExpression() {
+        auto err = multiplicativeExpression();
+        if (err.has_value()) {
+          //  cout << "wrong mul expression\n";
+            return err;
+        }
+        while (true) {
+            // 预读判断+-
+            auto next = nextToken();
+            if (!next.has_value()) {
+                unreadToken();
+                return {};
+            }
+            if (next.value().GetType() == TT::PLUS_SIGN) {
+                err = multiplicativeExpression();
+                if (err.has_value()) {
+                //    cout << "wrong mul expression\n";
+                    return err;
+                }
+                if(globalFlag){
+                    globalCode.emplace_back(IADD);
+                }else{
+                    localCode.emplace_back(IADD);
+                }
+            } else {
+                if (next.value().GetType() == TT::MINUS_SIGN) {
+                    err = multiplicativeExpression();
+                    if (err.has_value()) {
+                 //       cout << "wrong mul expression\n";
+                        return err;
+                    }
+                    if(globalFlag){
+                        globalCode.emplace_back(ISUB);
+                    }else{
+                        localCode.emplace_back(ISUB);
+                    }
+                } else {
+                    // 回退+-
+                    unreadToken();
+                    return {};
+                }
+            }
+        }
+        return {};
+    }
+
+    // <multiplicative-expression> ::=
+    //    <unary-expression>{<multiplicative-operator><unary-expression>}
+    std::optional<CompilationError> Analyser::multiplicativeExpression() {
+        auto err = unaryExpression();
+        if (err.has_value()) {
+         //   cout << "wrong unary expression\n";
+            return err;
+        }
+        while (true) {
+            // 预读判断*/
+            auto next = nextToken();
+            if (!next.has_value()) {
+                unreadToken();
+                return {};
+            }
+            if (next.value().GetType() == TT::MULTIPLICATION_SIGN) {
+                err = unaryExpression();
+                if (err.has_value()) {
+             //       cout << "wrong unary expression\n";
+                    return err;
+                }
+                if(globalFlag){
+                    globalCode.emplace_back(IMUL);
+                }else{
+                    localCode.emplace_back(IMUL);
+                }
+            } else {
+                if (next.value().GetType() == TT::DIVISION_SIGN) {
+                    err = unaryExpression();
+                    if (err.has_value()) {
+                //        cout << "wrong unary expression\n";
+                        return err;
+                    }
+                    if(globalFlag){
+                        globalCode.emplace_back(IDIV);
+                    }else{
+                        localCode.emplace_back(IDIV);
+                    }
+                } else {
+                    // 回退*/
+                    unreadToken();
+                    return {};
+                }
+            }
+        }
+        return {};
+    }
+
+    // <unary-expression> ::=
+    //    [<unary-operator>]<primary-expression>
+    std::optional<CompilationError> Analyser::unaryExpression() {
+        auto next = nextToken();
+        if (!next.has_value()) {
+            cout  << "expre need value\n";
+            return opError;
+        }
+        bool _negative = false;
+        if (next.value().GetType() == TT::PLUS_SIGN) _negative = false;
+        else {
+            if (next.value().GetType() == TT::MINUS_SIGN) {
+                _negative = true;
+            } else {
+                // 没用上就回退
+                unreadToken();
+            }
+        }
+        auto err = primaryExpression();
+        if (err.has_value()) {
+            cout << "wrong pri expression\n";
+            return err;
+        }
+        // 加上符号
+        if(_negative){
+            if(globalFlag){
+                globalCode.emplace_back(INEG);
+            }else{
+                localCode.emplace_back(INEG);
+            }
+        }
+        return {};
+    }
+
+    // <primary-expression> ::=
+    //     '('<expression>')'
+    //    |<identifier>
+    //    |<integer-literal>
+    //    |<function-call>
+    std::optional<CompilationError> Analyser::primaryExpression() {
+        auto next = nextToken();
+        std::optional<CompilationError> err;
+        if (!next.has_value()) {
+            cout << "no useful value\n";
+            return opError;
+        }
+        switch (next.value().GetType()) {
+            case LEFT_PARENTHESIS:
+                err = normalExpression();
+                if (err.has_value()) {
+                    cout << "wrong expression\n";
+                    return err;
+                }
+                next = nextToken();
+                if (!next.has_value() || next.value().GetType() != RIGHT_PARENTHESIS) {
+                    cout << "no right ) \n";
+                    return opError;
+                }
+                break;
+            case DECIMAL_INTEGER:
+            case HEXADECIMAL_INTEGER:
+                if(globalFlag){
+                    globalCode.emplace_back(IPUSH,next.value().GetValueString());
+                }else{
+                    localCode.emplace_back(IPUSH,next.value().GetValueString());
+                }
+                break;
+            case IDENTIFIER:
+                // 再次预读，判断是不是函数
+                next = nextToken();
+                // 函数
+                if (next.has_value() && next.value().GetType() == TT::LEFT_PARENTHESIS) {
+                    // 函数，回退到identifier之前
+                    unreadToken();
+                    unreadToken();
+                    //再次预读判断返回值类型
+                    next = nextToken();
+                    string tempName = next.value().GetValueString();
+                    // 未定义或者返回值为void
+                    if(getFunc(tempName)==-1||funcList[getFunc(tempName)].funcType == "void"){
+                        cout << "func not dec or is void \n";
+                        return opError;
+                    }
+                    // 如果正常则需要再次回退
+                    unreadToken();
+                    err = functionCall();
+                    if (err.has_value()) {
+               //         cout << "wrong func call\n";
+                        return err;
+                    }
+                } else {
+                    // 简单的变量，将预读的退回回到identifier之前
+                    unreadToken();
+                    unreadToken();
+                    next = nextToken();
+                    string tempName = next.value().GetValueString();
+                    // 判断是否合法的变量，可能是全局，因为初始化时可以表达式赋值
+                    if(globalFlag){
+                        if(!isDeclared(tempName,"global")){
+                            cout << "var not dec \n";
+                            return opError;
+                        }
+                        std::pair<std::string,std::string> tempPair = getVar(tempName);
+                        if(tempPair.first == "-"){
+                            cout << "no such var\n";
+                            return opError;
+                        }
+                        globalCode.emplace_back(LOADA,tempPair.first,tempPair.second);
+                        globalCode.emplace_back(ILOAD);
+                    }else{
+                        // 如果没有本地或者全局定义就报错
+                        if((!isDeclared(tempName,"local"))&&(!isDeclared(tempName,"global"))){
+                            cout << "var not dec \n";
+                            return opError;
+                        }
+                        std::pair<std::string,std::string> tempPair = getVar(tempName);
+                        if(tempPair.first == "-"){
+                            cout << "no such value\n";
+                            return opError;
+                        }
+                        localCode.emplace_back(LOADA,tempPair.first,tempPair.second);
+                        localCode.emplace_back(ILOAD);
+                    }
+                }
+                break;
+            default:
+                return opError;
+        }
+        return {};
+    }
+
+    std::optional<Token> Analyser::nextToken() {
+        if (_offset == _tokens.size())
+            return {};
+        _current_pos = _tokens[_offset].GetEndPos();
+        return _tokens[_offset++];
+    }
+
+    void Analyser::unreadToken() {
+        if (_offset == 0)
+            DieAndPrint("analyser unreads token from the begining.");
+        _current_pos = _tokens[_offset - 1].GetEndPos();
+        _offset--;
+    }
+
+    bool Analyser::isDeclared(const string& name,const string& type) {
+        if(type=="local"){
+            for(auto & var:localVarList)
+                if(var.varName == name)
+                    return true;
+            return false;
+        }
+        if(type=="global"){
+            for(auto & var:globalVarList)
+                if(var.varName == name)
+                    return true;
+            return false;
+        }
+        return false;
+    }
+    bool Analyser::isConst(const string& name) {
+        if(globalFlag){
+            for(auto & var:globalVarList)
+                if(var.varName == name)
+                    if(var.isConst)
+                        return true;
+        }else{
+            for(auto & var:localVarList)
+                if(var.varName == name)
+                    if(var.isConst)
+                        return true;
+            for(auto & var:globalVarList)
+                if(var.varName == name)
+                    if(var.isConst)
+                        return true;
+        }
+        return false;
+    }
+    std::pair<string,string> Analyser::getVar(const string& name) {
+        unsigned long long i;
+        // 需要返回栈内的偏移地址才行
+        if(globalFlag){
+            // 全局只查最外层
+            for(i = 0;i<globalVarList.size();i++)
+                if(globalVarList[i].varName == name)
+                    return make_pair("0",to_string(i));
+        }else{
+            // 局部则需要从内向外
+            for(i = 0;i<localVarList.size();i++)
+                if(localVarList[i].varName == name)
+                    return make_pair("0",to_string(i));
+            for(i = 0;i<globalVarList.size();i++)
+                if(globalVarList[i].varName == name)
+                    return make_pair("1",to_string(i));
+        }
+        // 没有这个变量，出错
+        return make_pair("-","-");
+    }
+    // 同样可判断是否和函数重名
+    int Analyser::getFunc(const string& name) {
+        unsigned long long i;
+        for(i = 0;i<funcList.size();i++)
+            if(funcList[i].funcName == name)
+                return (int)i;
+        return -1;
+    }
+    int Analyser::getConst(const string& name) {
+        unsigned long long i;
+        string temp = '\"'+name+'\"';
+        for(i = 0;i<constList.size();i++)
+            if(constList[i].value == temp)
+                return (int)i;
+        return -1;
+    }
 }

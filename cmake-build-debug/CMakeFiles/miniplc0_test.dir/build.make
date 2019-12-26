@@ -42,10 +42,10 @@ RM = "E:\CLion 2019.2.4\bin\cmake\win\bin\cmake.exe" -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\84759\Desktop\miniplc0-compiler
+CMAKE_SOURCE_DIR = F:\Desktop\study\C0-compiler
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\84759\Desktop\miniplc0-compiler\cmake-build-debug
+CMAKE_BINARY_DIR = F:\Desktop\study\C0-compiler\cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/miniplc0_test.dir/depend.make
@@ -59,44 +59,44 @@ include CMakeFiles/miniplc0_test.dir/flags.make
 CMakeFiles/miniplc0_test.dir/tests/test_main.cpp.obj: CMakeFiles/miniplc0_test.dir/flags.make
 CMakeFiles/miniplc0_test.dir/tests/test_main.cpp.obj: CMakeFiles/miniplc0_test.dir/includes_CXX.rsp
 CMakeFiles/miniplc0_test.dir/tests/test_main.cpp.obj: ../tests/test_main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\84759\Desktop\miniplc0-compiler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/miniplc0_test.dir/tests/test_main.cpp.obj"
-	E:\mingw64\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\miniplc0_test.dir\tests\test_main.cpp.obj -c C:\Users\84759\Desktop\miniplc0-compiler\tests\test_main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=F:\Desktop\study\C0-compiler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/miniplc0_test.dir/tests/test_main.cpp.obj"
+	E:\mingw64\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\miniplc0_test.dir\tests\test_main.cpp.obj -c F:\Desktop\study\C0-compiler\tests\test_main.cpp
 
 CMakeFiles/miniplc0_test.dir/tests/test_main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/miniplc0_test.dir/tests/test_main.cpp.i"
-	E:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\84759\Desktop\miniplc0-compiler\tests\test_main.cpp > CMakeFiles\miniplc0_test.dir\tests\test_main.cpp.i
+	E:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E F:\Desktop\study\C0-compiler\tests\test_main.cpp > CMakeFiles\miniplc0_test.dir\tests\test_main.cpp.i
 
 CMakeFiles/miniplc0_test.dir/tests/test_main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/miniplc0_test.dir/tests/test_main.cpp.s"
-	E:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\84759\Desktop\miniplc0-compiler\tests\test_main.cpp -o CMakeFiles\miniplc0_test.dir\tests\test_main.cpp.s
+	E:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S F:\Desktop\study\C0-compiler\tests\test_main.cpp -o CMakeFiles\miniplc0_test.dir\tests\test_main.cpp.s
 
 CMakeFiles/miniplc0_test.dir/tests/test_tokenizer.cpp.obj: CMakeFiles/miniplc0_test.dir/flags.make
 CMakeFiles/miniplc0_test.dir/tests/test_tokenizer.cpp.obj: CMakeFiles/miniplc0_test.dir/includes_CXX.rsp
 CMakeFiles/miniplc0_test.dir/tests/test_tokenizer.cpp.obj: ../tests/test_tokenizer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\84759\Desktop\miniplc0-compiler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/miniplc0_test.dir/tests/test_tokenizer.cpp.obj"
-	E:\mingw64\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\miniplc0_test.dir\tests\test_tokenizer.cpp.obj -c C:\Users\84759\Desktop\miniplc0-compiler\tests\test_tokenizer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=F:\Desktop\study\C0-compiler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/miniplc0_test.dir/tests/test_tokenizer.cpp.obj"
+	E:\mingw64\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\miniplc0_test.dir\tests\test_tokenizer.cpp.obj -c F:\Desktop\study\C0-compiler\tests\test_tokenizer.cpp
 
 CMakeFiles/miniplc0_test.dir/tests/test_tokenizer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/miniplc0_test.dir/tests/test_tokenizer.cpp.i"
-	E:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\84759\Desktop\miniplc0-compiler\tests\test_tokenizer.cpp > CMakeFiles\miniplc0_test.dir\tests\test_tokenizer.cpp.i
+	E:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E F:\Desktop\study\C0-compiler\tests\test_tokenizer.cpp > CMakeFiles\miniplc0_test.dir\tests\test_tokenizer.cpp.i
 
 CMakeFiles/miniplc0_test.dir/tests/test_tokenizer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/miniplc0_test.dir/tests/test_tokenizer.cpp.s"
-	E:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\84759\Desktop\miniplc0-compiler\tests\test_tokenizer.cpp -o CMakeFiles\miniplc0_test.dir\tests\test_tokenizer.cpp.s
+	E:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S F:\Desktop\study\C0-compiler\tests\test_tokenizer.cpp -o CMakeFiles\miniplc0_test.dir\tests\test_tokenizer.cpp.s
 
 CMakeFiles/miniplc0_test.dir/tests/test_analyser.cpp.obj: CMakeFiles/miniplc0_test.dir/flags.make
 CMakeFiles/miniplc0_test.dir/tests/test_analyser.cpp.obj: CMakeFiles/miniplc0_test.dir/includes_CXX.rsp
 CMakeFiles/miniplc0_test.dir/tests/test_analyser.cpp.obj: ../tests/test_analyser.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\84759\Desktop\miniplc0-compiler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/miniplc0_test.dir/tests/test_analyser.cpp.obj"
-	E:\mingw64\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\miniplc0_test.dir\tests\test_analyser.cpp.obj -c C:\Users\84759\Desktop\miniplc0-compiler\tests\test_analyser.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=F:\Desktop\study\C0-compiler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/miniplc0_test.dir/tests/test_analyser.cpp.obj"
+	E:\mingw64\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\miniplc0_test.dir\tests\test_analyser.cpp.obj -c F:\Desktop\study\C0-compiler\tests\test_analyser.cpp
 
 CMakeFiles/miniplc0_test.dir/tests/test_analyser.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/miniplc0_test.dir/tests/test_analyser.cpp.i"
-	E:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\84759\Desktop\miniplc0-compiler\tests\test_analyser.cpp > CMakeFiles\miniplc0_test.dir\tests\test_analyser.cpp.i
+	E:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E F:\Desktop\study\C0-compiler\tests\test_analyser.cpp > CMakeFiles\miniplc0_test.dir\tests\test_analyser.cpp.i
 
 CMakeFiles/miniplc0_test.dir/tests/test_analyser.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/miniplc0_test.dir/tests/test_analyser.cpp.s"
-	E:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\84759\Desktop\miniplc0-compiler\tests\test_analyser.cpp -o CMakeFiles\miniplc0_test.dir\tests\test_analyser.cpp.s
+	E:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S F:\Desktop\study\C0-compiler\tests\test_analyser.cpp -o CMakeFiles\miniplc0_test.dir\tests\test_analyser.cpp.s
 
 # Object files for target miniplc0_test
 miniplc0_test_OBJECTS = \
@@ -111,12 +111,12 @@ miniplc0_test.exe: CMakeFiles/miniplc0_test.dir/tests/test_main.cpp.obj
 miniplc0_test.exe: CMakeFiles/miniplc0_test.dir/tests/test_tokenizer.cpp.obj
 miniplc0_test.exe: CMakeFiles/miniplc0_test.dir/tests/test_analyser.cpp.obj
 miniplc0_test.exe: CMakeFiles/miniplc0_test.dir/build.make
-miniplc0_test.exe: libminiplc0_lib.a
+miniplc0_test.exe: libcc0_lib.a
 miniplc0_test.exe: 3rd_party/fmt/libfmtd.a
 miniplc0_test.exe: CMakeFiles/miniplc0_test.dir/linklibs.rsp
 miniplc0_test.exe: CMakeFiles/miniplc0_test.dir/objects1.rsp
 miniplc0_test.exe: CMakeFiles/miniplc0_test.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\84759\Desktop\miniplc0-compiler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable miniplc0_test.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=F:\Desktop\study\C0-compiler\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable miniplc0_test.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\miniplc0_test.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -129,6 +129,6 @@ CMakeFiles/miniplc0_test.dir/clean:
 .PHONY : CMakeFiles/miniplc0_test.dir/clean
 
 CMakeFiles/miniplc0_test.dir/depend:
-	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" C:\Users\84759\Desktop\miniplc0-compiler C:\Users\84759\Desktop\miniplc0-compiler C:\Users\84759\Desktop\miniplc0-compiler\cmake-build-debug C:\Users\84759\Desktop\miniplc0-compiler\cmake-build-debug C:\Users\84759\Desktop\miniplc0-compiler\cmake-build-debug\CMakeFiles\miniplc0_test.dir\DependInfo.cmake --color=$(COLOR)
+	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" F:\Desktop\study\C0-compiler F:\Desktop\study\C0-compiler F:\Desktop\study\C0-compiler\cmake-build-debug F:\Desktop\study\C0-compiler\cmake-build-debug F:\Desktop\study\C0-compiler\cmake-build-debug\CMakeFiles\miniplc0_test.dir\DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/miniplc0_test.dir/depend
 

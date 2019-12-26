@@ -5,7 +5,7 @@
 #include <utility>
 #include <iostream>
 
-namespace miniplc0 {
+namespace cc0 {
 
 	inline void DieAndPrint(std::string condition) {
 		std::cout << "Exception: " <<  condition << "\n";
@@ -17,7 +17,8 @@ namespace miniplc0 {
 	}
 
 	// To keep it simple, we don't create an error system.
-	enum ErrorCode { 
+	enum ErrorCode {
+	    ErrAll,
 		ErrNoError, // Should be only used internally.
 		ErrStreamError, 
 		ErrEOF,
@@ -26,6 +27,7 @@ namespace miniplc0 {
 		ErrIntegerOverflow, // int32_t overflow.
 		ErrNoBegin,
 		ErrNoEnd,
+		ErrWrongSign,
 		ErrNeedIdentifier,
 		ErrConstantNeedValue,
 		ErrNoSemicolon,

@@ -12,7 +12,7 @@
 #include <vector>
 #include <string>
 
-namespace miniplc0 {
+namespace cc0 {
 
 	class Tokenizer final {
 	private:
@@ -21,16 +21,16 @@ namespace miniplc0 {
 		// 状态机的所有状态
 		enum DFAState {
 			INITIAL_STATE,
-			UNSIGNED_INTEGER_STATE,
-			PLUS_SIGN_STATE,
-			MINUS_SIGN_STATE,
-			DIVISION_SIGN_STATE,
-			MULTIPLICATION_SIGN_STATE,
-			IDENTIFIER_STATE,
+            DECIMAL_INTEGER_STATE,
+            HEXADECIMAL_INTEGER_STATE,
+            CHAR_STATE,
+            STRING_STATE,
+            IDENTIFIER_STATE,
+            SLASH_SIGN_STATE,
+            LESS_SIGN_STATE,
+            MORE_SIGN_STATE,
+            POINT_SIGN_STATE,
 			EQUAL_SIGN_STATE,
-			SEMICOLON_STATE,
-			LEFTBRACKET_STATE,
-			RIGHTBRACKET_STATE
 		};
 	public:
 		Tokenizer(std::istream& ifs)
