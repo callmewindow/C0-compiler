@@ -6,7 +6,7 @@
 #include <iostream>
 #include <climits>
 #include <algorithm>
-#include <string.h>
+#include <cstring>
 #include <cmath>
 
 using namespace std;
@@ -20,7 +20,7 @@ namespace cc0 {
                 KEY("const", TT::CONST),
                 KEY("void", TT::VOID),
                 KEY("int", TT::INT),
-                KEY("char", TT::CHAR),
+                KEY("char", TT::CHART),
                 KEY("double", TT::DOUBLE),
                 KEY("struct", TT::STRUCT),
                 KEY("if", TT::IF),
@@ -54,19 +54,24 @@ namespace cc0 {
 //        stol >> token_num;
 //        return token_num;
 //    }
+    // 判断是不是十六进制的字符
     bool isHexDigit(char ch){
         if(isupper(ch)) ch-=('A'-'a');
         if(isdigit(ch)) return true;
         return (ch>='a'&&ch<='f');
     }
+    // 判断是不是十六进制数
     string checkHexDigit(string num){
         int l = num.length();
+        // 0x后无内容
+        if(l<=2) return "null";
         for(int i = 0;i<l;i++) if(isupper(num[i])) num[i]-=('A'-'a');
         //前两位不同
         if(!((num[0] == '0')&&(num[1] == 'x'))) return "null";
         for(int i = 2;i<l;i++) if(!isHexDigit(num[i])) return "null";
         return num;
     }
+    // 将十六进制数转为十进制
     string changeHex(string s){
         long long sum = 0;
         int count=s.length();
@@ -178,7 +183,8 @@ namespace cc0 {
                                     current_state = DFAState::HEXADECIMAL_INTEGER_STATE; // 切换到十六进制整数的状态
                                 }else{ //不是十六进制，还是要判断下是不是符合十进制
                                     if(isdigit(ch2)){ //是数字，不符合非0开头
-                                        return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos,ErrorCode::ErrAll));
+                                        // 这里会因为神奇的错误导致pos为0，暂时无法解决
+                                        return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos,ErrorCode::ErrWrongNum));
                                     }else{
                                         unreadLast(); //回退，捕获0
                                         current_state = DFAState::DECIMAL_INTEGER_STATE; // 切换到十进制整数的状态
@@ -237,6 +243,10 @@ namespace cc0 {
                             case ';':
                                 return std::make_pair(
                                         std::make_optional<Token>(TokenType::SEMICOLON, ';', pos, currentPos()),
+                                        std::optional<CompilationError>());
+                            case ':':
+                                return std::make_pair(
+                                        std::make_optional<Token>(TokenType::COLON, ':', pos, currentPos()),
                                         std::optional<CompilationError>());
                             case '(':
                                 return std::make_pair(
@@ -323,7 +333,7 @@ namespace cc0 {
                         // 判断temp的格式是否正确
                         temp = checkHexDigit(temp);
                         if(temp == "null"){
-                            return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos,ErrorCode::ErrAll));
+                            return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos,ErrorCode::ErrWrongNum));
                         }else{
                             return std::make_pair(
                                     std::make_optional<Token>(TokenType::HEXADECIMAL_INTEGER, temp, pos, currentPos()),
@@ -350,7 +360,7 @@ namespace cc0 {
                     // 判断temp的格式是否正确
                     temp = checkHexDigit(temp);
                     if(temp == "null"){
-                        return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos,ErrorCode::ErrAll));
+                        return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos,ErrorCode::ErrWrongNum));
                     }else{
                         temp = changeHex(temp);
                         return std::make_pair(
@@ -396,7 +406,9 @@ namespace cc0 {
                                 return std::make_pair(std::make_optional<Token>(TT::CHAR, temp, pos, currentPos()),
                                                       std::optional<CompilationError>());
                             }
-                            if(!isChar(ch)&&ch != '\"') return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos,ErrorCode::ErrAll));
+                            if(!isChar(ch)&&ch != '\"') {
+                                return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos,ErrorCode::ErrWrongChar));
+                            }
                             if(ch == '\\'){
                                 temp += ch;
                                 current_char = nextChar();
@@ -406,8 +418,9 @@ namespace cc0 {
                                 else unreadLast();
                             }else temp += ch;
                             current_char = nextChar();
+                        }else{
+                            return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos,ErrorCode::ErrWrongChar));
                         }
-                        else return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos,ErrorCode::ErrAll));
                     }
                 }
                 case STRING_STATE: {
@@ -420,7 +433,9 @@ namespace cc0 {
                                 return std::make_pair(std::make_optional<Token>(TT::STRING, temp, pos, currentPos()),
                                                       std::optional<CompilationError>());
                             }
-                            if(!isChar(ch)&&ch != '\'') return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos,ErrorCode::ErrAll));
+                            if(!isChar(ch)&&ch != '\''){
+                                return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos,ErrorCode::ErrWrongString));
+                            }
                             if(ch == '\\'){
                                 temp += ch;
                                 current_char = nextChar();
@@ -430,8 +445,9 @@ namespace cc0 {
                                 else unreadLast();
                             }else temp += ch;
                             current_char = nextChar();
+                        }else {
+                            return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos,ErrorCode::ErrWrongString));
                         }
-                        else return std::make_pair(std::optional<Token>(), std::make_optional<CompilationError>(pos,ErrorCode::ErrAll));
                     }
                 }
                 // 除号与注释
@@ -445,6 +461,7 @@ namespace cc0 {
                     }
                     auto ch = current_char.value();
                     // 两种注释的处理
+                    // 单行注释直接读到回车或者没有值
                     if (ch == '/') {
                         current_char = nextChar();
                         while (current_char.has_value()) {
@@ -453,6 +470,7 @@ namespace cc0 {
                             }
                             current_char = nextChar();
                         }
+                        // 单行注释如果到达结尾是正常的
                         if (!current_char.has_value()) {
                             unreadLast();
                         }
@@ -462,20 +480,32 @@ namespace cc0 {
                         current_state = INITIAL_STATE;
                         break;
                     }
+                    // 多行注释则寻找*/
                     if (ch == '*') {
                         current_char = nextChar();
                         while (current_char.has_value()) {
                             if (current_char.value() == '*') {
                                 current_char = nextChar();
-                                if (current_char.has_value() && current_char.value() == '/')
+                                if (current_char.has_value() && current_char.value() == '/'){
                                     break;
-                                else
-                                    continue;
+                                }else{
+                                    if(!current_char.has_value()){
+                                        unreadLast();
+                                        return std::make_pair(std::optional<Token>(),
+                                                              std::make_optional<CompilationError>(pos, ErrorCode::ErrWrongComment));
+                                    }else{
+                                        // 如果正常有值则进行下去即可，并且此时current_char还是刚才的值
+                                        continue;
+                                    }
+                                }
                             }
                             current_char = nextChar();
                         }
+                        // 一定是非正常结束，因此需要报错，不是多行注释
                         if (!current_char.has_value()) {
                             unreadLast();
+                            return std::make_pair(std::optional<Token>(),
+                                                  std::make_optional<CompilationError>(pos, ErrorCode::ErrWrongComment));
                         }
                         // 防止/影响缓冲区
                         ss.clear();
@@ -483,7 +513,7 @@ namespace cc0 {
                         current_state = INITIAL_STATE;
                         break;
                     }
-                    // 正常的除号
+                    // 不是单行注释不是多行注释，因此是正常的除号
                     unreadLast();
                     return std::make_pair(
                             std::make_optional<Token>(TokenType::DIVISION_SIGN, '/', pos, currentPos()),
@@ -557,29 +587,29 @@ namespace cc0 {
                 if(val.length() == 3){
                     if((!isChar(val[1])&&val[1]!='\"')||val[1] == '\\')
                         return std::make_optional<CompilationError>(t.GetStartPos().first, t.GetStartPos().second,
-                                                                    ErrorCode::ErrAll);
+                                                                    ErrorCode::ErrWrongChar);
                     break;
                 }
                 if(val.length() == 4){
                     if(val[1]!='\\')
                         return std::make_optional<CompilationError>(t.GetStartPos().first, t.GetStartPos().second,
-                                                                    ErrorCode::ErrAll);
+                                                                    ErrorCode::ErrWrongChar);
                     if(val[2]!='\\'&&val[2]!='\''&&val[2]!='\"'&&val[2]!='n'&&val[2]!='r'&&val[2]!='t')
                         return std::make_optional<CompilationError>(t.GetStartPos().first, t.GetStartPos().second,
-                                                                    ErrorCode::ErrAll);
+                                                                    ErrorCode::ErrWrongChar);
                     break;
                 }
                 if(val.length() == 6){
                     if(!(val[1]=='\\'&&(val[2]=='x'||val[2]=='X')))
                         return std::make_optional<CompilationError>(t.GetStartPos().first, t.GetStartPos().second,
-                                                                    ErrorCode::ErrAll);
+                                                                    ErrorCode::ErrWrongChar);
                     if(!(isHexDigit(val[3])||isdigit(val[3]))||!(isHexDigit(val[4])||isdigit(val[4])))
                         return std::make_optional<CompilationError>(t.GetStartPos().first, t.GetStartPos().second,
-                                                                    ErrorCode::ErrAll);
+                                                                    ErrorCode::ErrWrongChar);
                     break;
                 }
                 return std::make_optional<CompilationError>(t.GetStartPos().first, t.GetStartPos().second,
-                                                            ErrorCode::ErrAll);
+                                                            ErrorCode::ErrWrongChar);
             }
             case STRING: {
                 auto val = t.GetValueString();
@@ -594,15 +624,15 @@ namespace cc0 {
                         }
                         if(val.length()-i<=4)
                             return std::make_optional<CompilationError>(t.GetStartPos().first, t.GetStartPos().second,
-                                                                        ErrorCode::ErrAll);
+                                                                        ErrorCode::ErrWrongString);
                         if(!(val[i+1]=='x'||val[i+1]=='X')||!(isHexDigit(val[i+2])||isdigit(val[i+2]))||!(isHexDigit(val[i+3])||isdigit(val[i+3])))
                             return std::make_optional<CompilationError>(t.GetStartPos().first, t.GetStartPos().second,
-                                                                        ErrorCode::ErrAll);
+                                                                        ErrorCode::ErrWrongString);
                         i+=3;
                     }else{
                         if(!isChar(val[i])&&val[i]!='\'')
                             return std::make_optional<CompilationError>(t.GetStartPos().first, t.GetStartPos().second,
-                                                                        ErrorCode::ErrAll);
+                                                                        ErrorCode::ErrWrongString);
                     }
                 }
                 break;

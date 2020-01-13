@@ -1,0 +1,63 @@
+.constants:
+    0 S "main"
+.start:
+.functions:
+    0 0 0 0
+.F0:
+    0 ipush 0
+    1 loada 0, 0
+    2 ipush 0
+    3 ipush 2019
+    4 iadd
+    5 istore
+    6 ipush 0
+    7 loada 0, 1
+    8 loada 0, 0
+    9 iload
+    10 ipush 2007
+    11 isub
+    12 istore
+    13 ipush 0
+    14 loada 0, 2
+    15 ipush 0
+    16 istore
+    17 ipush 1721
+    18 iprint
+    19 printl
+    20 printl
+    21 ipush 2019
+    22 iprint
+    23 ipush 32
+    24 cprint
+    25 ipush 12
+    26 iprint
+    27 ipush 32
+    28 cprint
+    29 ipush 19
+    30 iprint
+    31 printl
+    32 printl
+    33 loada 0, 2
+    34 ipush 0
+    35 ipush 26
+    36 ineg
+    37 ineg
+    38 ineg
+    39 isub
+    40 istore
+    41 loada 0, 0
+    42 iload
+    43 iprint
+    44 ipush 32
+    45 cprint
+    46 loada 0, 1
+    47 iload
+    48 iprint
+    49 ipush 32
+    50 cprint
+    51 loada 0, 2
+    52 iload
+    53 iprint
+    54 printl
+    55 ipush 0
+    56 iret

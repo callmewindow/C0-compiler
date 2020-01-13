@@ -17,8 +17,8 @@ namespace cc0 {
     struct varInfo{
         std::string varName;
         bool isConst;
-        long long offsetIndex;
-        // std::string varType; 此时只有int一个类型，因此省略
+//        long long offsetIndex; // 直接在变量表中查看即可
+//        std::string varType; // 暂时有int和char两种，最后还是放弃了，太麻烦了
     };
 
     // 函数格式
@@ -28,13 +28,20 @@ namespace cc0 {
         int paramNum;
         int constOffset;
         bool isReturn;
-        // int hierarchy; 此时层次始终默认为一，因此去除属性
+        // int hierarchy; 此时层次始终默认为一，因此去除属性，不扩展作用域了，太难
         std::vector<cc0::Instruction> localCode;
     };
+
     // 常量格式
     struct constInfo{
         char type;
         std::string value;
+    };
+
+    // jump记录格式
+    struct jumpInfo{
+        int pos;
+        std::string type;
     };
 
     // 输出格式
@@ -72,6 +79,7 @@ namespace cc0 {
         std::optional<CompilationError> normalExpression();
         std::optional<CompilationError> additiveExpression();
         std::optional<CompilationError> multiplicativeExpression();
+        std::optional<CompilationError> castExpression();
         std::optional<CompilationError> unaryExpression();
         std::optional<CompilationError> primaryExpression();
         std::optional<CompilationError> variableDeclaration();
@@ -89,8 +97,14 @@ namespace cc0 {
         std::optional<CompilationError> jumpStatement();
         std::optional<CompilationError> returnStatement();
         std::optional<CompilationError> conditionStatement();
+        std::optional<CompilationError> ifCondition();
+        std::optional<CompilationError> switchCondition();
+        std::optional<CompilationError> labeledStatement();
         std::optional<CompilationError> normalCondition();
         std::optional<CompilationError> loopStatement();
+        std::optional<CompilationError> whileLoop();
+        std::optional<CompilationError> doWhileLoop();
+        std::optional<CompilationError> forLoop();
         std::optional<CompilationError> scanStatement();
         std::optional<CompilationError> printStatement();
         std::optional<CompilationError> printableList();
@@ -116,7 +130,7 @@ namespace cc0 {
 		// 脚标直接基于vector的存储顺序
 		// 默认值，这里是指变量的默认初始值和int函数的默认返回值
 		cc0::resultInfo result ;
-
+        // 变量的占位符
 		std::string defaultValue = "0";
 		// 全局变量表
 		std::vector<cc0::varInfo> globalVarList;
@@ -130,6 +144,15 @@ namespace cc0 {
         // 临时函数代码
         std::vector<cc0::Instruction> localCode;
         long long localOffset;
+        // 临时存储switch的表达式代码
+        std::vector<cc0::Instruction> switchCode;
+        std::vector<std::string> caseValue;
+
+        // 记录break和continue位置的临时变量
+        std::vector<cc0::jumpInfo> jumpPos;
+        // 记录是否在循环和switch中
+        bool inLoop;
+        bool inSwitch;
 
 		// 维护函数表及函数体的指令
 		std::vector<cc0::funcInfo> funcList;

@@ -2,23 +2,22 @@
 #include "fmt/core.h"
 
 #include "./vm.h"
-#include "./file.h"
-#include "./util/print.hpp"
+#include "util/print.hpp"
 
 #include "tokenizer/tokenizer.h"
 #include "analyser/analyser.h"
 #include "fmts.hpp"
+#include "error/error.h"
 
 #include <iostream>
-#include <fstream>
 
 
 std::vector<cc0::Token> _tokenize(std::istream& input) {
 	cc0::Tokenizer tkz(input);
 	auto p = tkz.AllTokens();
 	if (p.second.has_value()) {
-		fmt::print(stderr, "Tokenization error: {}\n", p.second.value());
-		exit(2);
+        fmt::print(stderr, "Tokenization error: {}\n", p.second.value());
+        exit(2);
 	}
 	return p.first;
 }
@@ -35,7 +34,8 @@ void Analyse(std::istream& input, std::ostream& output){
 	cc0::Analyser analyser(tks);
 	auto p = analyser.Analyse();
 	if (p.second.has_value()) {
-		fmt::print(stderr, "Syntactic analysis error: {}\n", p.second.value());
+	    // 语法的具体报错均在analysis.cpp中直接输出
+        fmt::print(stderr, "{}\n", p.second.value());
 		exit(2);
 	}
     auto constList = p.first.constList;
@@ -83,14 +83,16 @@ void assemble_text(std::ifstream* in, std::ofstream* out, bool run = false) {
 }
 
 int main(int argc, char** argv) {
+    // 选择的扩展有：注释、字面量、循环跳转语句、switch
+
 	argparse::ArgumentParser program("cc0");
 	program.add_argument("input")
 		.help("speicify the file to be compiled.");
 
-//	program.add_argument("-t")
-//		.default_value(false)
-//		.implicit_value(true)
-//		.help("perform tokenization for the input file.");
+	program.add_argument("-t")
+		.default_value(false)
+		.implicit_value(true)
+		.help("perform tokenization for the input file.");
 //
 //	program.add_argument("-l")
 //		.default_value(false)
@@ -146,19 +148,33 @@ int main(int argc, char** argv) {
 		}
 		output = &outf;
 	}
-	else
-		output = &std::cout;
+	else{
+	    // 没有的话就输出到out文件中
+        outf.open("out",std::ios::binary | std::ios::out | std::ios::trunc);
+        if (!outf) {
+            fmt::print(stderr, "Fail to open {} for writing.\n", output_file);
+            exit(2);
+        }
+        output = &outf;
+	}
 
-	if (program["-s"] == true && program["-c"] == true) {
-		fmt::print(stderr, "You can only perform tokenization or syntactic analysis at one time.");
+	int num = 0;
+    if(program["-t"] == true) num++;
+    if(program["-s"] == true) num++;
+    if(program["-c"] == true) num++;
+
+	if (num > 1) {
+	    // 多个选项
+		fmt::print(stderr, "You can only perform one analysis method at one time.");
 		exit(2);
 	}
 
-	if (program["-s"] == true) {
+	// 判断三种方式
+    if (program["-t"] == true) {
+        Tokenize(*input, *output);
+    }else if (program["-s"] == true) {
         Analyse(*input, *output);
-	}
-
-	else if (program["-c"] == true) {
+	}else if (program["-c"] == true) {
         std::ofstream outTemp;
         outTemp.open("./wyxlj.txt",std::ios::binary | std::ios::out | std::ios::trunc);
         auto outputTemp = &outTemp;
@@ -177,10 +193,8 @@ int main(int argc, char** argv) {
         assemble_text(inputTemp, dynamic_cast<std::ofstream*>(output), false);
         infTemp.close();
         remove("./wyxlj.txt");
-	}
-
-	else {
-		fmt::print(stderr, "You must choose tokenization or syntactic analysis.");
+	}else {
+		fmt::print(stderr, "You must choose one analysis method.");
 		exit(2);
 	}
 

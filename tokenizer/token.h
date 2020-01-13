@@ -14,7 +14,7 @@ namespace cc0 {
 		IDENTIFIER,
 
 		CONST,
-		VOID,INT,CHAR,DOUBLE,STRING,
+		VOID,INT,CHART,CHAR,DOUBLE,STRING,// 前一个chart为char类型，后一个是char字符
 		STRUCT,
 		IF,ELSE,
 		SWITCH,CASE,DEFAULT,
@@ -36,6 +36,7 @@ namespace cc0 {
 
         COMMA,
 		SEMICOLON,
+        COLON,
 		SINGLE_QUOTATION,DOUBLE_QUOTATION,
         LEFT_PARENTHESIS,
         RIGHT_PARENTHESIS,

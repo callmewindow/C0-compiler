@@ -20,6 +20,10 @@ namespace cc0 {
 	enum ErrorCode {
 	    ErrAll,
 		ErrNoError, // Should be only used internally.
+		ErrWrongComment,
+		ErrWrongChar,
+        ErrWrongString,
+        ErrWrongNum,
 		ErrStreamError, 
 		ErrEOF,
 		ErrInvalidInput,

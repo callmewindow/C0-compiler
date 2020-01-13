@@ -15,12 +15,12 @@ CMakeFiles/cc0.dir/file.cpp.obj: ../util/util.hpp
 
 CMakeFiles/cc0.dir/main.cpp.obj: ../3rd_party/argparse/include/argparse.hpp
 CMakeFiles/cc0.dir/main.cpp.obj: ../3rd_party/fmt/include/fmt/core.h
-CMakeFiles/cc0.dir/main.cpp.obj: ../error/error.h
 CMakeFiles/cc0.dir/main.cpp.obj: ../instruction/instruction.h
 CMakeFiles/cc0.dir/main.cpp.obj: ../tokenizer/token.h
 CMakeFiles/cc0.dir/main.cpp.obj: ../tokenizer/utils.hpp
 CMakeFiles/cc0.dir/main.cpp.obj: ../analyser/analyser.h
 CMakeFiles/cc0.dir/main.cpp.obj: ../constant.h
+CMakeFiles/cc0.dir/main.cpp.obj: ../error/error.h
 CMakeFiles/cc0.dir/main.cpp.obj: ../file.h
 CMakeFiles/cc0.dir/main.cpp.obj: ../fmts.hpp
 CMakeFiles/cc0.dir/main.cpp.obj: ../function.h

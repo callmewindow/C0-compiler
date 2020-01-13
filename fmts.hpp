@@ -14,9 +14,21 @@ namespace fmt {
         auto format(const cc0::ErrorCode &p, FormatContext &ctx) {
             std::string name;
             switch (p) {
+                case cc0::ErrWrongComment:
+                    name = "wrong comment.";
+                    break;
+                case cc0::ErrWrongChar:
+                    name = "wrong char content.";
+                    break;
+                case cc0::ErrWrongString:
+                    name = "wrong string content.";
+                    break;
+                case cc0::ErrWrongNum:
+                    name = "wrong num format.";
+                    break;
                 case cc0::ErrAll:
-                    name = "Undefined error, but it's really an error. Please check your program";
-                    name = "please check your program at the position left\n ps: line&col's value need+1"; // 防止对语法分析中的cout报错造成影响
+                    // 报错内容已经在analyser中输出，这里直接报错退出即可
+                    name = "Your code at the left position has the above error. \n";
                     break;
                 case cc0::ErrNoError:
                     name = "No error.";
@@ -140,6 +152,9 @@ namespace fmt {
                 case cc0::INT:
                     name = "INT";
                     break;
+                case cc0::CHART:
+                    name = "CHARtype";
+                    break;
                 case cc0::CHAR:
                     name = "CHAR";
                     break;
@@ -226,6 +241,9 @@ namespace fmt {
                     break;
                 case cc0::SEMICOLON:
                     name = "SEMICOLON";
+                    break;
+                case cc0::COLON:
+                    name = "COLON";
                     break;
                 case cc0::COMMA:
                     name = "COMMA";
@@ -316,7 +334,7 @@ namespace fmt {
                     name = "imul";
                     break;
                 case cc0::IDIV:
-                    name = "idev";
+                    name = "idiv";
                     break;
                 case cc0::INEG:
                     name = "ineg";
@@ -369,6 +387,12 @@ namespace fmt {
                 case cc0::ISCAN:
                     name = "iscan";
                     break;
+                case cc0::I2C:
+                    name = "i2c";
+                    break;
+                case cc0::CSCAN:
+                    name = "cscan";
+                    break;
             }
             return format_to(ctx.out(), name);
         }
@@ -399,6 +423,7 @@ namespace fmt {
                 case cc0::IDIV:
                 case cc0::INEG:
                 case cc0::ICMP:
+                case cc0::I2C:
                 case cc0::RET:
                 case cc0::IRET:
                 case cc0::IPRINT:
@@ -406,6 +431,7 @@ namespace fmt {
                 case cc0::SPRINT:
                 case cc0::PRINTL:
                 case cc0::ISCAN:
+                case cc0::CSCAN:
                     return format_to(ctx.out(), "{}", p.GetOperation());
                 // 单操作数
                 case cc0::BIPUSH:

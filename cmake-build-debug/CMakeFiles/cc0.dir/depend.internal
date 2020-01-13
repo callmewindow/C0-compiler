@@ -16,12 +16,12 @@ CMakeFiles/cc0.dir/file.cpp.obj
 CMakeFiles/cc0.dir/main.cpp.obj
  ../3rd_party/argparse/include/argparse.hpp
  ../3rd_party/fmt/include/fmt/core.h
- ../error/error.h
  ../instruction/instruction.h
  ../tokenizer/token.h
  ../tokenizer/utils.hpp
  F:/Desktop/study/C0-compiler/analyser/analyser.h
  F:/Desktop/study/C0-compiler/constant.h
+ F:/Desktop/study/C0-compiler/error/error.h
  F:/Desktop/study/C0-compiler/file.h
  F:/Desktop/study/C0-compiler/fmts.hpp
  F:/Desktop/study/C0-compiler/function.h

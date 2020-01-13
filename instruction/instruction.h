@@ -26,6 +26,7 @@ namespace cc0 {
 	    IDIV,
 	    INEG,
 	    ICMP,
+	    I2C,
 	    JMP,
 	    JE,
 	    JNE,
@@ -41,6 +42,7 @@ namespace cc0 {
 	    SPRINT,
 	    PRINTL,
 	    ISCAN,
+	    CSCAN,
 	};
 	
 	class Instruction final {

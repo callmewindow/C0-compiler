@@ -58,16 +58,6 @@ experimental/string_view
 fmt/core.h
 -
 
-../error/error.h
-cstdint
--
-string
--
-utility
--
-iostream
--
-
 ../instruction/instruction.h
 cstdint
 -
@@ -122,6 +112,16 @@ string
 variant
 -
 utility
+-
+
+F:/Desktop/study/C0-compiler/error/error.h
+cstdint
+-
+string
+-
+utility
+-
+iostream
 -
 
 F:/Desktop/study/C0-compiler/file.h
@@ -179,9 +179,7 @@ fmt/core.h
 F:/Desktop/study/C0-compiler/fmt/core.h
 ./vm.h
 F:/Desktop/study/C0-compiler/vm.h
-./file.h
-F:/Desktop/study/C0-compiler/file.h
-./util/print.hpp
+util/print.hpp
 F:/Desktop/study/C0-compiler/util/print.hpp
 tokenizer/tokenizer.h
 F:/Desktop/study/C0-compiler/tokenizer/tokenizer.h
@@ -189,9 +187,9 @@ analyser/analyser.h
 F:/Desktop/study/C0-compiler/analyser/analyser.h
 fmts.hpp
 F:/Desktop/study/C0-compiler/fmts.hpp
+error/error.h
+F:/Desktop/study/C0-compiler/error/error.h
 iostream
--
-fstream
 -
 
 F:/Desktop/study/C0-compiler/opcode.h

@@ -1,0 +1,31 @@
+.constants:
+    0 S "main"
+    1 S "123123sasdasd\x2012"
+    2 S "yesyes"
+    3 S "12"
+    4 S "\xaa"
+    5 S "\\"
+.start:
+.functions:
+    0 0 0 0
+.F0:
+    0 loadc 1
+    1 sprint
+    2 ipush 32
+    3 cprint
+    4 loadc 2
+    5 sprint
+    6 printl
+    7 loadc 3
+    8 sprint
+    9 ipush 32
+    10 cprint
+    11 loadc 4
+    12 sprint
+    13 ipush 32
+    14 cprint
+    15 loadc 5
+    16 sprint
+    17 printl
+    18 ipush 0
+    19 iret
